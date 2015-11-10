@@ -277,6 +277,21 @@ class MultiversionManager implements MultiversionManagerInterface, ContainerAwar
     // Definitions will now be updated. So fetch the new ones.
     $entity_types = $this->getSupportedEntityTypes();
 
+    // The order of migrations are important due to how stub entities are
+    // created. However, there is not one fit for all scenarios.
+    // @todo Make this configurable or provide the ability to modify migrations
+    // @todo Needs tests
+    $priorities = ['taxonomy_term', 'user', 'file'];
+    foreach ($priorities as $entity_type_id) {
+      if (!isset($entity_types[$entity_type_id])) {
+        continue;
+      }
+      // Unshift the priority entity type to the beginning of the array.
+      $priority = [$entity_type_id => $entity_types[$entity_type_id]];
+      unset($entity_types[$entity_type_id]);
+      $entity_types = array_merge($priority, $entity_types);
+    }
+
     // Migrate from the temporary storage to the new shiny home.
     foreach ($entity_types as $entity_type_id => $entity_type) {
       if ($has_data[$entity_type_id]) {

@@ -90,7 +90,7 @@ class MultiversionMigration implements MultiversionMigrationInterface {
       $values = [
         'id' => $id,
         'label' => '',
-        'process' => $this->getFieldMap($entity_type),
+        'process' => $this->getFieldMap($entity_type, $id),
         'source' => ['plugin' => 'multiversion'],
         'destination' => ['plugin' => 'tempstore'],
       ];
@@ -132,7 +132,7 @@ class MultiversionMigration implements MultiversionMigrationInterface {
       $values = [
         'id' => $id,
         'label' => '',
-        'process' => $this->getFieldMap($entity_type),
+        'process' => $this->getFieldMap($entity_type, $id),
         'source' => ['plugin' => 'tempstore'],
         'destination' => ['plugin' => 'multiversion'],
       ];
@@ -154,17 +154,32 @@ class MultiversionMigration implements MultiversionMigrationInterface {
    * Helper method to fetch the field map for an entity type.
    *
    * @param EntityTypeInterface $entity_type
+   * @param string $migration_id
    */
-  public function getFieldMap(EntityTypeInterface $entity_type) {
+  protected function getFieldMap(EntityTypeInterface $entity_type, $migration_id) {
     $map = array();
     $bundle_info = $this->entityManager->getBundleInfo($entity_type->id());
     foreach ($bundle_info as $bundle_id => $bundle_label) {
-      $definitions = $this->entityManager->getFieldDefinitions($entity_type->id(), $bundle_id);
-      foreach ($definitions as $definition) {
-        $name = $definition->getName();
+      $fields = $this->entityManager->getFieldDefinitions($entity_type->id(), $bundle_id);
+      foreach ($fields as $field) {
+        $name = $field->getName();
         // We don't want our own fields to be part of the migration mapping or
         // they would get assigned NULL instead of default values.
-        if (!in_array($name, ['workspace', '_deleted', '_rev'])) {
+        if (in_array($name, ['workspace', '_deleted', '_rev'])) {
+          continue;
+        }
+        list(, $migration_type) = explode('__', $migration_id);
+
+        // @todo Term parent doesn't work
+        if ($migration_type == 'from_tmp' && $field->getType() == 'entity_reference' && $name != $entity_type->getKey('bundle')) {
+          $settings = $field->getSettings();
+          $map[$name] = [
+            'plugin' => 'migration',
+            'migration' => $settings['target_type'] . '__from_tmp',
+            'source' => $name,
+          ];
+        }
+        else {
           $map[$name] = $name;
         }
       }
