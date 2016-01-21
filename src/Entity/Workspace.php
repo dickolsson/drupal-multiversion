@@ -28,7 +28,8 @@ use Drupal\Core\Field\BaseFieldDefinition;
  *     },
  *   },
  *   links = {
- *     "edit-form" = "/workspace/{workspace}/edit",
+ *     "canonical" = "/admin/structure/workspaces/{workspace}",
+ *     "edit-form" = "/admin/structure/workspaces/{workspace}/edit",
  *     "collection" = "/admin/structure/workspaces"
  *   },
  *   admin_permission = "administer workspaces",
