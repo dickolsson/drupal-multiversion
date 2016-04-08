@@ -2,13 +2,7 @@
 
 namespace Drupal\multiversion\Entity\Index;
 
-interface RevisionTreeIndexInterface {
-
-  /**
-   * @param $workspace_id
-   * @return \Drupal\multiversion\Entity\Index\EntityIndexInterface
-   */
-  public function useWorkspace($workspace_id);
+interface RevisionTreeIndexInterface extends IndexInterface {
 
   /**
    * @param string $uuid

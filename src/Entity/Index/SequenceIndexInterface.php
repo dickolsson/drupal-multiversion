@@ -4,13 +4,7 @@ namespace Drupal\multiversion\Entity\Index;
 
 use Drupal\Core\Entity\ContentEntityInterface;
 
-interface SequenceIndexInterface {
-
-  /**
-   * @param $id
-   * @return \Drupal\multiversion\Entity\Index\SequenceIndex
-   */
-  public function useWorkspace($id);
+interface SequenceIndexInterface extends IndexInterface {
 
   /**
    * @param \Drupal\Core\Entity\ContentEntityInterface $entity

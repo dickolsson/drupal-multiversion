@@ -2,6 +2,29 @@ parameters:
   workspace.default: 1
 
 services:
+  # Index Factory
+  multiversion.entity_index.factory:
+    class: Drupal\multiversion\Entity\Index\MultiversionIndexFactory
+    arguments: ['@service_container', '@workspace.manager']
+
+  # Index children
+  multiversion.entity_index.sequence.scope:
+    parent: multiversion.entity_index.sequence
+    scope: prototype
+  multiversion.entity_index.id.scope:
+    parent: multiversion.entity_index.id
+    scope: prototype
+  multiversion.entity_index.uuid.scope:
+    parent: multiversion.entity_index.uuid
+    scope: prototype
+  multiversion.entity_index.rev.scope:
+    parent: multiversion.entity_index.rev
+    scope: prototype
+  multiversion.entity_index.rev.tree.scope:
+    parent: multiversion.entity_index.rev.tree
+    scope: prototype
+
+  # Indexes
   multiversion.entity_index.sequence:
     class: Drupal\multiversion\Entity\Index\SequenceIndex
     arguments: ['@keyvalue.sorted_set', '@workspace.manager', '@multiversion.manager']
@@ -17,6 +40,7 @@ services:
   multiversion.entity_index.rev.tree:
     class: Drupal\multiversion\Entity\Index\RevisionTreeIndex
     arguments: ['@keyvalue', '@workspace.manager', '@multiversion.entity_index.rev']
+
   multiversion.entity.query.sql:
     class: Drupal\multiversion\Entity\Query\Sql\QueryFactory
     arguments: ['@database']

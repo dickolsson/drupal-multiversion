@@ -4,13 +4,7 @@ namespace Drupal\multiversion\Entity\Index;
 
 use Drupal\Core\Entity\EntityInterface;
 
-interface EntityIndexInterface {
-
-  /**
-   * @param $id
-   * @return \Drupal\multiversion\Entity\Index\IndexInterface
-   */
-  public function useWorkspace($id);
+interface EntityIndexInterface extends IndexInterface {
 
   /**
    * @param string $key
