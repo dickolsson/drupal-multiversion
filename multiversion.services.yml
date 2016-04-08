@@ -39,7 +39,7 @@ services:
     arguments: ['@keyvalue', '@workspace.manager']
   multiversion.entity_index.rev.tree:
     class: Drupal\multiversion\Entity\Index\RevisionTreeIndex
-    arguments: ['@keyvalue', '@workspace.manager', '@multiversion.entity_index.rev']
+    arguments: ['@keyvalue', '@workspace.manager', '@multiversion.entity_index.factory']
 
   multiversion.entity.query.sql:
     class: Drupal\multiversion\Entity\Query\Sql\QueryFactory

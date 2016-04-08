@@ -3,6 +3,7 @@
 namespace Drupal\multiversion\Entity\Index;
 
 use Drupal\Core\KeyValueStore\KeyValueFactoryInterface;
+use Drupal\multiversion\Entity\Workspace;
 use Drupal\multiversion\Workspace\WorkspaceManagerInterface;
 
 /**
@@ -22,9 +23,9 @@ class RevisionTreeIndex implements RevisionTreeIndexInterface {
   protected $workspaceManager;
 
   /**
-   * @var \Drupal\multiversion\Entity\Index\RevisionIndexInterface
+   * @var \Drupal\multiversion\Entity\Index\MultiversionIndexFactory
    */
-  protected $revIndex;
+  protected $indexFactory;
 
   /**
    * @var string
@@ -39,12 +40,12 @@ class RevisionTreeIndex implements RevisionTreeIndexInterface {
   /**
    * @param \Drupal\Core\KeyValueStore\KeyValueFactoryInterface $key_value_factory
    * @param \Drupal\multiversion\Workspace\WorkspaceManagerInterface $workspace_manager
-   * @param \Drupal\multiversion\Entity\Index\RevisionIndexInterface $rev_index
+   * @param \Drupal\multiversion\Entity\Index\MultiversionIndexFactory $index_factory
    */
-  function __construct(KeyValueFactoryInterface $key_value_factory, WorkspaceManagerInterface $workspace_manager, RevisionIndexInterface $rev_index) {
+  function __construct(KeyValueFactoryInterface $key_value_factory, WorkspaceManagerInterface $workspace_manager, MultiversionIndexFactory $index_factory) {
     $this->keyValueFactory = $key_value_factory;
     $this->workspaceManager = $workspace_manager;
-    $this->revIndex = $rev_index;
+    $this->indexFactory = $index_factory;
   }
 
   /**
@@ -174,8 +175,9 @@ class RevisionTreeIndex implements RevisionTreeIndexInterface {
     foreach (array_keys($revs) as $rev) {
       $keys[] = "$uuid:$rev";
     }
-    $revs_info = $this->revIndex
-      ->useWorkspace($this->getWorkspaceId())
+    $workspace = Workspace::load($this->getWorkspaceId());
+    $revs_info = $this->indexFactory
+      ->get('multiversion.entity_index.rev', $workspace)
       ->getMultiple($keys);
     return self::doBuildTree($uuid, $revs, $revs_info);
   }

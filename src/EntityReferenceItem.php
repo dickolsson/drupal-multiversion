@@ -31,7 +31,9 @@ class EntityReferenceItem extends CoreEntityReferenceItem {
       // @see \Drupal\relaxed\BulkDocs\BulkDocs::save()
       if ($this->entity->isNew()) {
         $uuid = $this->entity->uuid();
-        if ($uuid && $record = \Drupal::service('multiversion.entity_index.uuid')->get($uuid)) {
+        $uuid_index = \Drupal::service('multiversion.entity_index.factory')
+          ->get('multiversion.entity_index.uuid');
+        if ($uuid && $record = $uuid_index->get($uuid)) {
           /** @var \Drupal\Core\Entity\EntityTypeManagerInterface $entity_type_manager */
           $entity_type_manager = \Drupal::service('entity_type.manager');
           $entity_type_id = $this->entity->getEntityTypeId();
