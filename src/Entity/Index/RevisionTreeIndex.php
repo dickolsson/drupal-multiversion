@@ -6,6 +6,7 @@ use Drupal\Core\Entity\ContentEntityInterface;
 use Drupal\Core\KeyValueStore\KeyValueFactoryInterface;
 use Drupal\multiversion\Entity\Workspace;
 use Drupal\multiversion\Workspace\WorkspaceManagerInterface;
+use Fhaculty\Graph\Graph;
 
 /**
  * @todo: {@link https://www.drupal.org/node/2597444 Consider caching once/if
@@ -63,6 +64,65 @@ class RevisionTreeIndex implements RevisionTreeIndexInterface {
   public function getTree($uuid) {
     $values = $this->buildTree($uuid);
     return $values['tree'];
+  }
+
+  public function getGraph($uuid) {
+    $tree = $this->getTree($uuid);
+    $graph = new Graph();
+    $rev_ids = array();
+    $this->storeNodesId($tree, $rev_ids);
+    $vertices = $this->generateVertices($graph, $rev_ids);
+    $this->generateEdges($vertices,$tree);
+    return $graph;
+  }
+
+  /**
+   * Stores all revision IDs in an array.
+   *
+   * @param $tree : Array containing information about tree
+   * @param $rev_ids : Array to store all revision ID.
+   */
+  protected function storeNodesId($tree, &$revision_ids) {
+    foreach ($tree as $value) {
+      $current_id = $value['#rev'];
+      $revision_ids[$current_id] = $current_id;
+      if (count($value['children'])) {
+        $this->storeNodesId($value['children'], $revision_ids);
+      }
+    }
+  }
+
+  /**
+   * Create Edges between parent and children.
+   *
+   * @param $revisions_array : An array which stores graph nodes.
+   * @param $tree : Array containing tree information.
+   * @param int $parent : Parent ID.
+   */
+  protected function generateEdges($revisions_array, $tree, $parent = -1 ) {
+    foreach ($tree as $item) {
+      $current_id =$item['#rev'];
+      if($parent != -1) {
+        $revisions_array[$parent]->createEdgeTo($revisions_array[$current_id]);
+      }
+      if(count($item['children'])) {
+        $this->generateEdges($revisions_array, $item['children'], $current_id);
+      }
+    }
+  }
+
+  /**
+   * Generates vertices for Graph.
+   *
+   * @param Graph $graph : Graph class object
+   * @param int $count : Number of nodes.
+   * @return \Fhaculty\Graph\Vertex[]
+   */
+  protected function generateVertices(Graph $graph, $revision_ids) {
+    foreach ($revision_ids as $id) {
+      $ids[] = $id;
+    }
+    return $graph->createVertices($ids)->getMap();
   }
 
   /**
