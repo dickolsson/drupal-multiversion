@@ -154,7 +154,7 @@ class GraphCreationTest extends MultiversionWebTestBase {
     $entity->save();
     $revs[] = $entity->_rev->value;
 
-    $entity = $storage->load(1);
+    $entity = $storage->loadRevision(1);
     $entity->save();
     $revs[] = $entity->_rev->value;
 
