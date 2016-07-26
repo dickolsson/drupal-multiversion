@@ -186,25 +186,25 @@ class GraphCreationTest extends MultiversionWebTestBase
       $this->assertEqual($parent->getId(), $revs[1],'node 3\'s parent is 2');
     }
     foreach ($vertices[$revs[3]]->getVerticesEdgeFrom() as $parent) {
-      $this->assertEqual($parent->getId(),  $revs[1],'node 4\'s parent is 3');
+      $this->assertEqual($parent->getId(),  $revs[2],'node 4\'s parent is 3');
     }
     foreach ($vertices[$revs[4]]->getVerticesEdgeFrom() as $parent) {
       $this->assertEqual($parent->getId(), $revs[3], 'node 5\'s parent is 2');
     }
     foreach ($vertices[$revs[5]]->getVerticesEdgeFrom() as $parent) {
-      $this->assertEqual($parent->getId(), $revs[0], 'node 6\'s parent is 1');
+      $this->assertEqual($parent->getId(), $revs[4], 'node 6\'s parent is 1');
     }
     foreach ($vertices[$revs[6]]->getVerticesEdgeFrom() as $parent) {
-      $this->assertEqual($parent->getId(), $revs[0],'node 7\'s parent is 6');
+      $this->assertEqual($parent->getId(), $revs[5],'node 7\'s parent is 6');
     }
     foreach ($vertices[$revs[7]]->getVerticesEdgeFrom() as $parent) {
-      $this->assertEqual($parent->getId(), $revs[1],'node 8\'s parent is 6');
+      $this->assertEqual($parent->getId(), $revs[6],'node 8\'s parent is 6');
     }
     foreach ($vertices[$revs[8]]->getVerticesEdgeFrom() as $parent) {
-      $this->assertEqual($parent->getId(),  $revs[1],'node 9\'s parent is 3');
+      $this->assertEqual($parent->getId(),  $revs[7],'node 9\'s parent is 3');
     }
     foreach ($vertices[$revs[9]]->getVerticesEdgeFrom() as $parent) {
-      $this->assertEqual($parent->getId(), $revs[3], 'node 10\'s parent is 8');
+      $this->assertEqual($parent->getId(), $revs[8], 'node 10\'s parent is 8');
     }
   }
 }
