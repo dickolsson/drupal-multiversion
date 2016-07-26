@@ -67,6 +67,11 @@ function multiversion_entity_type_alter(array &$entity_types) {
           $entity_type->setHandlerClass('storage', "$namespace\\MediaStorage");
           $entity_type->setHandlerClass('storage_schema', "$namespace\\ContentEntityStorageSchema");
           break;
+        
+        case 'paragraph':
+          $entity_type->setHandlerClass('storage', "$namespace\\ParagraphsStorage");
+          $entity_type->setHandlerClass('storage_schema', "$namespace\\ParagraphsStorageSchema");
+          break;
 
         default:
           $storage_class = $entity_type->getHandlerClass('storage');
@@ -166,6 +171,7 @@ function multiversion_data_type_info_alter(&$info) {
 function multiversion_field_info_alter(&$info) {
   $info['uuid']['class'] = '\Drupal\multiversion\Field\UuidItem';
   $info['entity_reference']['class'] = '\Drupal\multiversion\EntityReferenceItem';
+  $info['entity_reference_revisions']['class'] = '\Drupal\multiversion\EntityReferenceRevisionsItem';
 }
 
 /**
