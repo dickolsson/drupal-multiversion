@@ -14,10 +14,9 @@ use Fhaculty\Graph\Graph;
  *
  * @group multiversion
  */
-class GraphCreationTest extends MultiversionWebTestBase
-{
+class GraphCreationTest extends MultiversionWebTestBase {
 
-  public static $modules = ['entity_test','key_value', 'entity_storage_migrate', 'multiversion'];
+  public static $modules = ['entity_test', 'key_value', 'entity_storage_migrate', 'multiversion'];
 
   /**
    * @var \Drupal\multiversion\Workspace\WorkspaceManagerInterface

@@ -14,6 +14,13 @@ interface RevisionTreeIndexInterface extends IndexInterface {
   public function getTree($uuid);
 
   /**
+   * @param string $uuid
+   *
+   * @return object of graph type 
+   */
+  public function getGraph($uuid);
+
+  /**
    * @param \Drupal\Core\Entity\ContentEntityInterface $entity
    * @param array $branch
    * @return RevisionTreeIndexInterface

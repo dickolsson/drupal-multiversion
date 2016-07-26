@@ -66,13 +66,16 @@ class RevisionTreeIndex implements RevisionTreeIndexInterface {
     return $values['tree'];
   }
 
+  /**
+   * {@inheritdoc}
+   */
   public function getGraph($uuid) {
     $tree = $this->getTree($uuid);
     $graph = new Graph();
     $rev_ids = array();
     $this->storeNodesId($tree, $rev_ids);
     $vertices = $this->generateVertices($graph, $rev_ids);
-    $this->generateEdges($vertices,$tree);
+    $this->generateEdges($vertices, $tree);
     return $graph;
   }
 
@@ -101,7 +104,7 @@ class RevisionTreeIndex implements RevisionTreeIndexInterface {
    */
   protected function generateEdges($revisions_array, $tree, $parent = -1 ) {
     foreach ($tree as $item) {
-      $current_id =$item['#rev'];
+      $current_id = $item['#rev'];
       if($parent != -1) {
         $revisions_array[$parent]->createEdgeTo($revisions_array[$current_id]);
       }
