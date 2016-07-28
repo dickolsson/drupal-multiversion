@@ -1,14 +1,8 @@
 <?php
 
-/**
- * @file
- * Contains \Drupal\multiversion\Entity\Storage\ContentEntityStorageTrait.
- */
-
 namespace Drupal\multiversion\Entity\Storage;
 
 use Drupal\Core\Cache\CacheBackendInterface;
-use Drupal\Core\Entity\EntityChangedInterface;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Entity\EntityStorageException;
 use Drupal\file\FileInterface;
