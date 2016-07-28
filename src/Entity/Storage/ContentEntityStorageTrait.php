@@ -8,6 +8,7 @@
 namespace Drupal\multiversion\Entity\Storage;
 
 use Drupal\Core\Cache\CacheBackendInterface;
+use Drupal\Core\Entity\EntityChangedInterface;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Entity\EntityStorageException;
 use Drupal\file\FileInterface;
@@ -159,6 +160,25 @@ trait ContentEntityStorageTrait {
       $entity->_rev->new_edit = FALSE;
       throw new EntityStorageException($e->getMessage(), $e->getCode(), $e);
     }
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  protected function doPreSave(EntityInterface $entity) {
+    if (!$entity->isNew() && !isset($entity->original) && $entity->originalId) {
+      $entity->original = $this->loadUnchanged($entity->originalId);
+    }
+    parent::doPreSave($entity);
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  protected function doPostSave(EntityInterface $entity, $update) {
+    parent::doPostSave($entity, $update);
+    // Set the originalId to allow entity renaming.
+    $entity->originalId = $entity->id();
   }
 
   /**

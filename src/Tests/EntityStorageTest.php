@@ -262,11 +262,6 @@ class EntityStorageTest extends MultiversionWebTestBase {
       $first_id = $entity->id();
       $first_rev = $entity->_rev->value;
       try {
-        // Temporary solution.
-        // @todo: {@link https://www.drupal.org/node/2597516 Remove now that
-        // https://www.drupal.org/node/2453153 is fixed.}
-        $entity->original = clone $entity;
-
         // Trigger an error by setting the ID too large.
         $entity->{$id_key}->value = PHP_INT_MAX;
         $entity->save();
