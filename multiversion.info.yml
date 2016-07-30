@@ -8,3 +8,4 @@ dependencies:
   - key_value
   - serialization
   - system (>=8.1.0)
+  - conflict
