@@ -9,7 +9,11 @@ use Fhaculty\Graph\Graph;
 use Relaxed\LCA\LcaException;
 use Drupal\Multiversion\Entity\Index\RevisionTreeIndex;
 
-class LcaResolver implements ConflictAncestorResolverInterface {
+class ComplexLcaResolver implements ConflictAncestorResolverInterface {
+
+  public function applies() {
+    return TRUE;
+  }
 
   public function resolve(RevisionableInterface $revision1, RevisionableInterface $revision2) {
    $lca = new LowestCommonAncestor($graph);

@@ -55,7 +55,7 @@ class ComplexLcaResolverTest extends MultiversionWebTestBase
    *             /
    *            5
    */
-  public function testGraphCreation() {
+  public function testLcaFinder() {
     $storage = $this->entityManager->getStorage('entity_test');
     $entity = $storage->create();
     $uuid = $entity->uuid();
@@ -103,16 +103,16 @@ class ComplexLcaResolverTest extends MultiversionWebTestBase
     $entity = $storage->load(1);
     $this->assertEqual($entity->getRevisionId(), 5, 'Default revision has been set correctly.');
 
-
-    $manager = Drupal::service('conflict.lca_manager');
-
     $graph = $this->tree->getGraph($uuid);
     $vertices = $graph->getVertices()->getMap();
 
     $lca = new LowestCommonAncestor($graph);
 
-    $node1 = $lca->find($revs[2], $revs[3]);
-    $this->assertEqual($revs[1], $node1);
-
+    $manager = Drupal::service('conflict.lca_manager');
+    $parent_revision_id1 = $manager->resolveLowestCommonAncestor($vertices[$revs[2]], $vertices[$revs[3]], $graph);
+    $revisionLca = Drupal::entityTypeManager()
+      ->getStorage('entity_test')
+      ->loadRevision($parent_revision_id1);
+    $this->assertEqual($revisionLca, $vertices[$revs[1]], "Yes we got it");
   }
 }
