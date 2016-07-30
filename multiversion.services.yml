@@ -89,3 +89,8 @@ services:
       - [setWorkspaceManager, ['@workspace.manager']]
     tags:
       - { name: workspace_negotiator, priority: 100 }
+
+  conflict.simplelca_resolver:
+    class: Drupal\multiversion\Entity\Index\ComplexLcaResolver.php
+    tags:
+      - { name: lca_resolver, priority: 20 }
