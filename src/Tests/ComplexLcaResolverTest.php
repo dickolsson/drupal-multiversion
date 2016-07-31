@@ -103,13 +103,19 @@ class ComplexLcaResolverTest extends MultiversionWebTestBase
     $entity = $storage->load(1);
     $this->assertEqual($entity->getRevisionId(), 5, 'Default revision has been set correctly.');
 
+    $revision1 = Drupal::entityTypeManager()
+      ->getStorage('entity_test')
+      ->loadRevision(3);
+
+    $revision2 = Drupal::entityTypeManager()
+      ->getStorage('entity_test')
+      ->loadRevision(4);
+
     $graph = $this->tree->getGraph($uuid);
     $vertices = $graph->getVertices()->getMap();
 
-    $lca = new LowestCommonAncestor($graph);
-
     $manager = Drupal::service('conflict.lca_manager');
-    $parent_revision_id1 = $manager->resolveLowestCommonAncestor($revs[2], $revs[3], $graph);
+    $parent_revision_id1 = $manager->resolveLowestCommonAncestor($revision1,$revision2, $graph);
     $revisionLca = Drupal::entityTypeManager()
       ->getStorage('entity_test')
       ->loadRevision($parent_revision_id1);
