@@ -31,8 +31,7 @@ class GraphCreationTest extends MultiversionWebTestBase {
   /**
    * {@inheritdoc}
    */
-  protected function setUp()
-  {
+  protected function setUp() {
     parent::setUp();
 
     $this->tree = $this->container->get('multiversion.entity_index.rev.tree');
@@ -48,8 +47,7 @@ class GraphCreationTest extends MultiversionWebTestBase {
    *             /
    *            5
    */
-  public function testGraphCreation()
-  {
+  public function testGraphCreation() {
     $storage = $this->entityManager->getStorage('entity_test');
     $entity = $storage->create();
     $uuid = $entity->uuid();
@@ -128,8 +126,7 @@ class GraphCreationTest extends MultiversionWebTestBase {
    *     4   9    10
    *
    */
-  public function testGraphCreation2()
-  {
+  public function testGraphCreation2() {
     $storage = $this->entityManager->getStorage('entity_test');
     $entity = $storage->create();
     $uuid = $entity->uuid();

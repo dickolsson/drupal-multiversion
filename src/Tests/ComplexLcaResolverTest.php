@@ -18,8 +18,7 @@ use Relaxed\LCA\LcaException;
  *
  * @group multiversion
  */
-class ComplexLcaResolverTest extends MultiversionWebTestBase
-{
+class ComplexLcaResolverTest extends MultiversionWebTestBase {
 
   public static $modules = ['entity_test', 'key_value', 'entity_storage_migrate', 'multiversion', 'conflict'];
 
@@ -36,12 +35,8 @@ class ComplexLcaResolverTest extends MultiversionWebTestBase
   /**
    * {@inheritdoc}
    */
-  protected function setUp()
-  {
+  protected function setUp() {
     parent::setUp();
-
-        
-
     $this->tree = $this->container->get('multiversion.entity_index.rev.tree');
   }
 
@@ -118,6 +113,6 @@ class ComplexLcaResolverTest extends MultiversionWebTestBase
     $revisionLca = Drupal::entityTypeManager()
       ->getStorage('entity_test')
       ->loadRevision($parent_revision_id1);
-    $this->assertEqual($revisionLca['#rev'], $revs[2], "Yes we got it");
+    $this->assertEqual($parent_revision_id1->getId(), $revs[1]);
   }
 }
