@@ -90,12 +90,12 @@ class ComplexLcaResolverTest extends MultiversionWebTestBase {
     $this->assertEqual($entity->getRevisionId(), 5, 'Default revision has been set correctly.');
 
     // Create a new branch based on the first revision.
-    $entity = $storage->load(1);
+    $entity = $storage->loadRevision(1);
     $entity->save();
     $revs[] = $entity->_rev->value;
 
     $entity = $storage->load(1);
-    $this->assertEqual($entity->getRevisionId(), 6, 'Default revision has been set correctly.');
+    $this->assertEqual($entity->getRevisionId(), 5, 'Default revision has been set correctly.');
 
     $revision1 = Drupal::entityTypeManager()
       ->getStorage('entity_test')
