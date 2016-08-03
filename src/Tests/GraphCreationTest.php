@@ -6,7 +6,6 @@
  */
 
 namespace Drupal\multiversion\Tests;
-use Drupal\multiversion\Entity\Index\RevisionTreeIndex;
 use Fhaculty\Graph\Graph;
 
 /**

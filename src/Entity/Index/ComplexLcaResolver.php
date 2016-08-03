@@ -15,7 +15,7 @@ class ComplexLcaResolver implements ConflictAncestorResolverInterface {
     return TRUE;
   }
 
-  public function resolve(RevisionableInterface $revision1, RevisionableInterface $revision2, Graph $graph) {
+  public function resolve(RevisionableInterface $revision1, RevisionableInterface $revision2, Graph $graph = NULL) {
    $lca = new LowestCommonAncestor($graph);
     $vertices = $graph->getVertices()->getMap();
     return $lca->find($vertices[$revision1->_rev->value], $vertices[$revision2->_rev->value]);

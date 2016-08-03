@@ -8,13 +8,12 @@
 namespace Drupal\multiversion\Tests;
 
 use Drupal;
-use Drupal\multiversion\Entity\Index\RevisionTreeIndex;
 use Fhaculty\Graph\Graph;
 use Relaxed\LCA\LowestCommonAncestor;
 use Relaxed\LCA\LcaException;
 
 /**
- * Test the getGraph method from the RevisionTreeIndex class.
+ * Test the Integration of LCA library with multiversion module.
  *
  * @group multiversion
  */
@@ -91,7 +90,7 @@ class ComplexLcaResolverTest extends MultiversionWebTestBase {
     $this->assertEqual($entity->getRevisionId(), 5, 'Default revision has been set correctly.');
 
     // Create a new branch based on the first revision.
-    $entity = $storage->loadRevision(1);
+    $entity = $storage->load(1);
     $entity->save();
     $revs[] = $entity->_rev->value;
 
