@@ -2,12 +2,6 @@
   "name": "drupal/multiversion",
   "description": "Extends the revision support for content entities.",
   "type": "drupal-module",
-  "repositories": [
-    {
-      "type": "vcs",
-      "url": "https://github.com/relaxedws/lca"
-    }
-  ],
   "require": {
     "relaxedws/lca": "dev-master"
   },
