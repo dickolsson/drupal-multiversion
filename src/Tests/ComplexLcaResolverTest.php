@@ -95,7 +95,7 @@ class ComplexLcaResolverTest extends MultiversionWebTestBase {
     $revs[] = $entity->_rev->value;
 
     $entity = $storage->load(1);
-    $this->assertEqual($entity->getRevisionId(), 5, 'Default revision has been set correctly.');
+    $this->assertEqual($entity->getRevisionId(), 6, 'Default revision has been set correctly.');
 
     $revision1 = Drupal::entityTypeManager()
       ->getStorage('entity_test')
