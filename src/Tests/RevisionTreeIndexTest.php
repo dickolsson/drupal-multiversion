@@ -9,7 +9,7 @@ namespace Drupal\multiversion\Tests;
 use Drupal\multiversion\Entity\Index\RevisionTreeIndex;
 
 /**
- * Test the methods on the RevisionTreeIndex class. 
+ * Test the methods on the RevisionTreeIndex class.
  *
  * @group multiversion
  *

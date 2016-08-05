@@ -166,8 +166,7 @@ class ComplexLcaResolverTest extends MultiversionWebTestBase {
     $entity = $storage->loadRevision(3);
     $entity->save();
     $revs[] = $entity->_rev->value;
-
-    // Create a new branch based on the first revision.
+    
     $entity = $storage->loadRevision(8);
     $entity->save();
     $revs[] = $entity->_rev->value;

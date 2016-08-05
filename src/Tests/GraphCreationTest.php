@@ -202,7 +202,7 @@ class GraphCreationTest extends MultiversionWebTestBase {
       $this->assertEqual($parent->getId(), $revs[7], 'node 10\'s parent is 8');
     }
   }
-
+  
   public function testGraphCreation3() {
     $storage = $this->entityManager->getStorage('entity_test');
     $entity = $storage->create();
