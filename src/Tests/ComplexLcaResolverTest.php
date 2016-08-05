@@ -244,4 +244,206 @@ class ComplexLcaResolverTest extends MultiversionWebTestBase {
     $parent_revision_id1 = $manager->resolveLowestCommonAncestor($revision8,$revision10, $graph);
     $this->assertEqual($parent_revision_id1->getId(), $revs[7]);
   }
+
+  public function testLcaFinder3() {
+    $storage = $this->entityManager->getStorage('entity_test');
+    $entity = $storage->create();
+    $uuid = $entity->uuid();
+
+    $entity->save();
+    $revs[] = $entity->_rev->value;
+
+    $entity->save();
+    $revs[] = $entity->_rev->value;
+
+    $entity->save();
+    $revs[] = $entity->_rev->value;
+
+    $entity->save();
+    $revs[] = $entity->_rev->value;
+
+    $entity->save();
+    $revs[] = $entity->_rev->value;
+
+    $entity->save();
+    $revs[] = $entity->_rev->value;
+
+    $entity = $storage->loadRevision(3);
+    $entity->save();
+    $revs[] = $entity->_rev->value;
+
+    $entity = $storage->loadRevision(3);
+    $entity->save();
+    $revs[] = $entity->_rev->value;
+
+    $entity = $storage->loadRevision(4);
+    $entity->save();
+    $revs[] = $entity->_rev->value;
+
+    $entity = $storage->loadRevision(7);
+    $entity->save();
+    $revs[] = $entity->_rev->value;
+
+    $entity = $storage->loadRevision(8);
+    $entity->save();
+    $revs[] = $entity->_rev->value;
+
+    $entity = $storage->loadRevision(1);
+    $entity->save();
+    $revs[] = $entity->_rev->value;
+
+    $entity = $storage->loadRevision(12);
+    $entity->save();
+    $revs[] = $entity->_rev->value;
+
+    $entity = $storage->loadRevision(13);
+    $entity->save();
+    $revs[] = $entity->_rev->value;
+
+    $entity = $storage->loadRevision(13);
+    $entity->save();
+    $revs[] = $entity->_rev->value;
+
+    $entity = $storage->loadRevision(14);
+    $entity->save();
+    $revs[] = $entity->_rev->value;
+
+    $entity = $storage->loadRevision(15);
+    $entity->save();
+    $revs[] = $entity->_rev->value;
+
+    $entity = $storage->loadRevision(16);
+    $entity->save();
+    $revs[] = $entity->_rev->value;
+
+    $entity = $storage->loadRevision(16);
+    $entity->save();
+    $revs[] = $entity->_rev->value;
+
+    $entity = $storage->loadRevision(17);
+    $entity->save();
+    $revs[] = $entity->_rev->value;
+
+    $entity = $storage->loadRevision(5);
+    $entity->save();
+    $revs[] = $entity->_rev->value;
+
+    $graph = $this->tree->getGraph($uuid);
+
+    $revision1 = Drupal::entityTypeManager()
+      ->getStorage('entity_test')
+      ->loadRevision(1);
+
+    $revision2 = Drupal::entityTypeManager()
+      ->getStorage('entity_test')
+      ->loadRevision(2);
+
+    $revision3 = Drupal::entityTypeManager()
+      ->getStorage('entity_test')
+      ->loadRevision(3);
+
+    $revision4 = Drupal::entityTypeManager()
+      ->getStorage('entity_test')
+      ->loadRevision(4);
+
+    $revision5 = Drupal::entityTypeManager()
+      ->getStorage('entity_test')
+      ->loadRevision(5);
+
+    $revision6 = Drupal::entityTypeManager()
+      ->getStorage('entity_test')
+      ->loadRevision(6);
+
+    $revision7 = Drupal::entityTypeManager()
+      ->getStorage('entity_test')
+      ->loadRevision(7);
+
+    $revision8 = Drupal::entityTypeManager()
+      ->getStorage('entity_test')
+      ->loadRevision(8);
+
+    $revision9 = Drupal::entityTypeManager()
+      ->getStorage('entity_test')
+      ->loadRevision(9);
+
+    $revision10 = Drupal::entityTypeManager()
+      ->getStorage('entity_test')
+      ->loadRevision(10);
+
+    $revision11 = Drupal::entityTypeManager()
+      ->getStorage('entity_test')
+      ->loadRevision(11);
+
+    $revision12 = Drupal::entityTypeManager()
+      ->getStorage('entity_test')
+      ->loadRevision(12);
+
+    $revision13 = Drupal::entityTypeManager()
+      ->getStorage('entity_test')
+      ->loadRevision(13);
+
+    $revision14 = Drupal::entityTypeManager()
+      ->getStorage('entity_test')
+      ->loadRevision(14);
+
+    $revision15 = Drupal::entityTypeManager()
+      ->getStorage('entity_test')
+      ->loadRevision(15);
+
+    $revision16 = Drupal::entityTypeManager()
+      ->getStorage('entity_test')
+      ->loadRevision(16);
+
+    $revision17 = Drupal::entityTypeManager()
+      ->getStorage('entity_test')
+      ->loadRevision(17);
+
+    $revision18 = Drupal::entityTypeManager()
+      ->getStorage('entity_test')
+      ->loadRevision(18);
+
+    $revision19 = Drupal::entityTypeManager()
+      ->getStorage('entity_test')
+      ->loadRevision(19);
+
+    $revision20 = Drupal::entityTypeManager()
+      ->getStorage('entity_test')
+      ->loadRevision(20);
+
+    $revision21 = Drupal::entityTypeManager()
+      ->getStorage('entity_test')
+      ->loadRevision(21);
+
+    $manager = Drupal::service('conflict.lca_manager');
+    
+    $parent_revision_id1 = $manager->resolveLowestCommonAncestor($revision1,$revision2, $graph);
+    $this->assertEqual($parent_revision_id1->getId(), $revs[0], "Did we get it");
+
+    $parent_revision_id1 = $manager->resolveLowestCommonAncestor($revision2,$revision3, $graph);
+    $this->assertEqual($parent_revision_id1->getId(), $revs[1], "Hell yea");
+
+    $parent_revision_id1 = $manager->resolveLowestCommonAncestor($revision7,$revision8, $graph);
+    $this->assertEqual($parent_revision_id1->getId(), $revs[2]);
+
+    $parent_revision_id1 = $manager->resolveLowestCommonAncestor($revision5,$revision9, $graph);
+    $this->assertEqual($parent_revision_id1->getId(), $revs[3]);
+
+    $parent_revision_id1 = $manager->resolveLowestCommonAncestor($revision10,$revision11, $graph);
+    $this->assertEqual($parent_revision_id1->getId(), $revs[2]);
+
+    $parent_revision_id1 = $manager->resolveLowestCommonAncestor($revision16,$revision17, $graph);
+    cd m  mu  $this->assertEqual($parent_revision_id1->getId(), $revs[12]);
+
+    $parent_revision_id1 = $manager->resolveLowestCommonAncestor($revision19,$revision20, $graph);
+    $this->assertEqual($parent_revision_id1->getId(), $revs[12]);
+
+    $parent_revision_id1 = $manager->resolveLowestCommonAncestor($revision6,$revision21, $graph);
+    $this->assertEqual($parent_revision_id1->getId(), $revs[4]);
+
+    $parent_revision_id1 = $manager->resolveLowestCommonAncestor($revision6,$revision11, $graph);
+    $this->assertEqual($parent_revision_id1->getId(), $revs[2]);
+
+    $parent_revision_id1 = $manager->resolveLowestCommonAncestor($revision5,$revision21, $graph);
+    $this->assertEqual($parent_revision_id1->getId(), $revs[4]);
+  }
 }
