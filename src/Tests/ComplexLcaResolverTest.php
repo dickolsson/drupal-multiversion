@@ -432,7 +432,7 @@ class ComplexLcaResolverTest extends MultiversionWebTestBase {
     $this->assertEqual($parent_revision_id1->getId(), $revs[2]);
 
     $parent_revision_id1 = $manager->resolveLowestCommonAncestor($revision16,$revision17, $graph);
-    cd m  mu  $this->assertEqual($parent_revision_id1->getId(), $revs[12]);
+    $this->assertEqual($parent_revision_id1->getId(), $revs[12]);
 
     $parent_revision_id1 = $manager->resolveLowestCommonAncestor($revision19,$revision20, $graph);
     $this->assertEqual($parent_revision_id1->getId(), $revs[12]);
