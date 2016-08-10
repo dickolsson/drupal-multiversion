@@ -26,7 +26,8 @@ class ComplexLcaResolver implements ConflictAncestorResolverInterface {
    * @param RevisionableInterface $revision2
    * @param Graph $graph
    *
-   * @return Vertex
+   * @return array
+   *   Returns an array of vertices or an empty array.
    */
   public function resolve(RevisionableInterface $revision1, RevisionableInterface $revision2, Graph $graph = NULL) {
     $lca = new LowestCommonAncestor($graph);

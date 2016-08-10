@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @file
- * Contains \Drupal\multiversion\Tests\ComplexLcaResolverTest.
- */
-
 namespace Drupal\multiversion\Tests;
 
 use Drupal\multiversion\Tests\MultiversionWebTestBase;
@@ -206,7 +201,7 @@ class ComplexLcaResolverTest extends MultiversionWebTestBase {
     $this->assertEqual($lca_id->getId(), $revs[2]);
   }
 
-  // Graph structure in multiversion/vendor/relaxedws/lca/pictures/simple_graph.png
+    // Graph structure in multiversion/vendor/relaxedws/lca/pictures/simple_graph.png
     public function testLcaFinder3() {
     $storage = $this->entityManager->getStorage('entity_test');
     $entity = $storage->create();
@@ -289,7 +284,6 @@ class ComplexLcaResolverTest extends MultiversionWebTestBase {
 
     // Loading and storing revisions in $revision array.
     $revision = [];
-
     for ($i = 1; $i <= 21; $i++) {
       $revision[$i] = $storage->loadRevision($i);
     }

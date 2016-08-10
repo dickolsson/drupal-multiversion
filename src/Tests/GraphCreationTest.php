@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @file
- * Contains \Drupal\multiversion\Tests\GraphCreationTest.
- */
-
 namespace Drupal\multiversion\Tests;
 use Fhaculty\Graph\Graph;
 
@@ -205,7 +200,6 @@ class GraphCreationTest extends MultiversionWebTestBase {
       $this->assertEqual($parent->getId(), $revs[7], 'node 10\'s parent is 8');
     }
   }
-
 
   /**
    * Graph structure defined in /vendor/relaxedws/lca/pictures/simple_graph.png
