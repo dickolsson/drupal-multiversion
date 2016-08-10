@@ -94,7 +94,10 @@ class GraphCreationTest extends MultiversionWebTestBase {
     $entity = $storage->load(1);
     $this->assertEqual($entity->getRevisionId(), 5, 'Default revision has been set correctly.');
 
+    // Creating graph from the revision tree.
     $graph = $this->tree->getGraph($uuid);
+    
+    // Storing the graph's vertices in $vertices array.
     $vertices = $graph->getVertices()->getMap();
 
     foreach ($vertices[$revs[1]]->getVerticesEdgeFrom() as $parent) {
@@ -202,7 +205,11 @@ class GraphCreationTest extends MultiversionWebTestBase {
       $this->assertEqual($parent->getId(), $revs[7], 'node 10\'s parent is 8');
     }
   }
-  
+
+
+  /**
+   * Graph structure defined in /vendor/relaxedws/lca/pictures/simple_graph.png
+   */
   public function testGraphCreation3() {
     $storage = $this->entityManager->getStorage('entity_test');
     $entity = $storage->create();

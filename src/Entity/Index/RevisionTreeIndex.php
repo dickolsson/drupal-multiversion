@@ -80,10 +80,12 @@ class RevisionTreeIndex implements RevisionTreeIndexInterface {
   }
 
   /**
-   * Stores all revision IDs in an array.
+   * Helper function to store all revision IDs in an array.
    *
-   * @param $tree : Array containing information about tree
-   * @param $rev_ids : Array to store all revision ID.
+   * @param array $tree
+   *   An associative array containing information about tree.
+   * @param array $rev_ids
+   *   An array to store all revision ID.
    */
   protected function storeNodesId($tree, &$revision_ids) {
     foreach ($tree as $value) {
@@ -96,11 +98,14 @@ class RevisionTreeIndex implements RevisionTreeIndexInterface {
   }
 
   /**
-   * Create Edges between parent and children.
+   * Helper function to create Edges between parent and children.
    *
-   * @param $revisions_array : An array which stores graph nodes.
-   * @param $tree : Array containing tree information.
-   * @param int $parent : Parent ID.
+   * @param array $revisions_array
+   *   Associative array containing graph nodes.
+   * @param array $tree
+   *   Associative array containing tree structure.
+   * @param int $parent
+   *   Parent vertex Id.
    */
   protected function generateEdges($revisions_array, $tree, $parent = -1 ) {
     foreach ($tree as $item) {
@@ -117,9 +122,11 @@ class RevisionTreeIndex implements RevisionTreeIndexInterface {
   /**
    * Generates vertices for Graph.
    *
-   * @param Graph $graph : Graph class object
-   * @param int $count : Number of nodes.
-   * @return \Fhaculty\Graph\Vertex[]
+   * @param Graph $graph
+   * @param array $revision_ids
+   *
+   * @return array
+   *   An array of vertices.
    */
   protected function generateVertices(Graph $graph, $revision_ids) {
     foreach ($revision_ids as $id) {

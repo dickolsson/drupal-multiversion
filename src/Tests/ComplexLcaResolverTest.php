@@ -137,6 +137,7 @@ class ComplexLcaResolverTest extends MultiversionWebTestBase {
     $entity->save();
     $revs[] = $entity->_rev->value;
 
+    // Create a new branch from the first revision.
     $entity = $storage->loadRevision(1);
     $entity->save();
     $revs[] = $entity->_rev->value;
@@ -205,12 +206,13 @@ class ComplexLcaResolverTest extends MultiversionWebTestBase {
     $this->assertEqual($lca_id->getId(), $revs[2]);
   }
 
-  // Graph structure in /vendor/relaxedws/lca/pictures/simple_graph.png
+  // Graph structure in multiversion/vendor/relaxedws/lca/pictures/simple_graph.png
     public function testLcaFinder3() {
     $storage = $this->entityManager->getStorage('entity_test');
     $entity = $storage->create();
     $uuid = $entity->uuid();
 
+    // Initial revision.
     $entity->save();
     $revs[] = $entity->_rev->value;
 
@@ -229,15 +231,20 @@ class ComplexLcaResolverTest extends MultiversionWebTestBase {
     $entity->save();
     $revs[] = $entity->_rev->value;
 
+    // Create a new branch from the third revision.
     $entity = $storage->loadRevision(3);
     $entity->save();
     $revs[] = $entity->_rev->value;
 
     $entity->save();
     $revs[] = $entity->_rev->value;
+
+    // Create a new branch from the fourth revision.
     $entity = $storage->loadRevision(4);
     $entity->save();
     $revs[] = $entity->_rev->value;
+
+    // Create a new branch from the fifth revision.
     $entity = $storage->loadRevision(5);
     $entity->save();
     $revs[] = $entity->_rev->value;
@@ -277,6 +284,7 @@ class ComplexLcaResolverTest extends MultiversionWebTestBase {
     $entity->save();
     $revs[] = $entity->_rev->value;
 
+    // Creating graph from revision tree.
     $graph = $this->tree->getGraph($uuid);
 
     // Loading and storing revisions in $revision array.
