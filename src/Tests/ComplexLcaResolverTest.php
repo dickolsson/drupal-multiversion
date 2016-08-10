@@ -201,8 +201,8 @@ class ComplexLcaResolverTest extends MultiversionWebTestBase {
     $this->assertEqual($lca_id->getId(), $revs[2]);
   }
 
-    // Graph structure in multiversion/vendor/relaxedws/lca/pictures/simple_graph.png
-    public function testLcaFinder3() {
+  // Graph structure in multiversion/vendor/relaxedws/lca/pictures/simple_graph.png
+  public function testLcaFinder3() {
     $storage = $this->entityManager->getStorage('entity_test');
     $entity = $storage->create();
     $uuid = $entity->uuid();
