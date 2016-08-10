@@ -13,7 +13,7 @@ use Drupal\Multiversion\Entity\Index\RevisionTreeIndex;
 class ComplexLcaResolver implements ConflictAncestorResolverInterface {
 
   /**
-   * @return bool
+   * {@inheritdoc}
    */
   public function applies() {
     return TRUE;
