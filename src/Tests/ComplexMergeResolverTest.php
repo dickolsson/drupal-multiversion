@@ -31,13 +31,10 @@ class ComplexMergeResolverTest extends MultiversionWebTestBase {
     $entity = $storage->create(['name' => 'rev 1']);
     $entity->save();
 
-    $entity->name = 'rev 2
-                     Added in revision 2';
+    $entity->name = 'rev 2';
     $entity->save();
 
-    $entity->name = 'rev 1
-                     Added in revision 2
-                     Now it should be added as well.';
+    $entity->name = 'rev 1';
     $entity->save();
 
     $rev1 = $storage->loadRevision(1);
@@ -45,8 +42,6 @@ class ComplexMergeResolverTest extends MultiversionWebTestBase {
     $rev3 = $storage->loadRevision(3);
 
     $merged = $this->conflictMergeManager->resolveSimpleMerge($rev1,$rev2,$rev3);
-    $this->assertEqual($merged->name, 'rev 2
-                                       Added in revision 2
-                                       Now it should be added as well.');
+    $this->assertEqual($merged->name, 'rev 2');
   }
 }
