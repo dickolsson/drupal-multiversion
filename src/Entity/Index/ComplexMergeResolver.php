@@ -5,12 +5,13 @@ namespace Drupal\Multiversion\Entity\Index;
 use Drupal\conflict\ConflictResolverInterface;
 use Symfony\Component\Serializer;
 use Drupal\Serialization\Normalizer;
+use Drupal;
 use Relaxed\Merge\ThreeWayMerge;
-use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 use Drupal\Core\Entity\RevisionableInterface;
 
 class ComplexMergeResolver implements ConflictResolverInterface {
 
+  
   /**
    * {@inheritdoc}
    */
@@ -18,31 +19,19 @@ class ComplexMergeResolver implements ConflictResolverInterface {
     return TRUE;
   }
 
-  public function normalize($object, $format = NULL, array $context = array()) {
-    $attributes = array();
-    foreach ($object as $name => $field) {
-      $attributes[$name] = $this->serializer->normalize($field, $format, $context);
-    }
-    return $attributes;
-  }
-
-
-
   /**
    * @param RevisionableInterface $revision1
    * @param RevisionableInterface $revision2
    * @param RevisionableInterface $revision3
    *
-   * @return mixed
-   *  Last created revision's Id.
+   * @return array
    */
-  public function merge(RevisionableInterface $revision1, RevisionableInterface $revision2, RevisionableInterface $revision3)
-  {
-    $r1_array = $this->normalize($revision1, 'array');
-    $r2_array = $this->normalize($revision2, 'array');
-    $r3_array = $this->normalize($revision3, 'array');
+  public function merge(RevisionableInterface $revision1, RevisionableInterface $revision2, RevisionableInterface $revision3) {
+    $r1_array = \Drupal::service('serializer')->normalize($revision1);
+    $r2_array = \Drupal::service('serializer')->normalize($revision2, 'array');
+    $r3_array = \Drupal::service('serializer')->normalize($revision3, 'array');
     $merge = new ThreeWayMerge();
     $result = $merge->performMerge($r1_array, $r2_array, $r3_array);
-    // Todo: Implement Denormalize method.
+    return $result;
   }
 }
