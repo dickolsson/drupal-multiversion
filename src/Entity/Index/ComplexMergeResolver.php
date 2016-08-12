@@ -4,7 +4,8 @@ namespace Drupal\Multiversion\Entity\Index;
 
 use Drupal\conflict\ConflictResolverInterface;
 use Symfony\Component\Serializer;
-use Symfony\Component\Serializer\Normalizer;
+use Drupal\Serialization\Normalizer;
+use Relaxed\Merge\ThreeWayMerge;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 use Drupal\Core\Entity\RevisionableInterface;
 
@@ -25,6 +26,8 @@ class ComplexMergeResolver implements ConflictResolverInterface {
     return $attributes;
   }
 
+
+
   /**
    * @param RevisionableInterface $revision1
    * @param RevisionableInterface $revision2
@@ -33,10 +36,13 @@ class ComplexMergeResolver implements ConflictResolverInterface {
    * @return mixed
    *  Last created revision's Id.
    */
-  public function merge(RevisionableInterface $revision1, RevisionableInterface $revision2, RevisionableInterface $revision3) {
+  public function merge(RevisionableInterface $revision1, RevisionableInterface $revision2, RevisionableInterface $revision3)
+  {
     $r1_array = $this->normalize($revision1, 'array');
     $r2_array = $this->normalize($revision2, 'array');
     $r3_array = $this->normalize($revision3, 'array');
-    // Implement the recursive merge here.
+    $merge = new ThreeWayMerge();
+    $result = $merge->performMerge($r1_array, $r2_array, $r3_array);
+    // Todo: Implement Denormalize method.
   }
 }

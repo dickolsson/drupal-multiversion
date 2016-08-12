@@ -2,8 +2,15 @@
   "name": "drupal/multiversion",
   "description": "Extends the revision support for content entities.",
   "type": "drupal-module",
+  "repositories": [
+    {
+      "type": "git",
+      "url": "https://github.com/relaxedws/merge"
+    }
+  ],
   "require": {
-    "relaxedws/lca": "dev-master"
+    "relaxedws/lca": "dev-master",
+    "relaxedws/merge": "dev-master"
   },
   "license": "GPL-2.0+"
 }
