@@ -4,8 +4,6 @@ namespace Drupal\Multiversion\Entity\Index;
 
 use Drupal\conflict\ConflictResolverInterface;
 use Symfony\Component\Serializer;
-use Drupal\Serialization\Normalizer\EntityNormalizer;
-use Drupal;
 use Relaxed\Merge\ThreeWayMerge;
 use Drupal\Core\Entity\RevisionableInterface;
 
@@ -15,10 +13,7 @@ use Drupal\Core\Entity\RevisionableInterface;
 class ComplexMergeResolver implements ConflictResolverInterface {
 
   protected $serializer;
-
-  protected function setUp() {
-    $this->serializer = $this->container->get('serializer.normalizer.entity');
-  }
+  protected  $container;
 
   /**
    * {@inheritdoc}
@@ -35,9 +30,11 @@ class ComplexMergeResolver implements ConflictResolverInterface {
    * @return array
    */
   public function merge(RevisionableInterface $revision1, RevisionableInterface $revision2, RevisionableInterface $revision3) {
-    $r1_array = $this->serializer->normalize($revision1);
-    $r2_array = $this->serializer->normalize($revision2);
-    $r3_array = $this->serializer->normalize($revision3);
+    $container = \Drupal::getContainer();
+    $serializer = $container->get('serializer.normalizer.content_entity');
+    $r1_array = $serializer->normalize($revision1, 'array');
+    $r2_array = $serializer->normalize($revision2, 'array');
+    $r3_array = $serializer->normalize($revision3, 'array');
     $merge = new ThreeWayMerge();
     $result = $merge->performMerge($r1_array, $r2_array, $r3_array);
     return $result;

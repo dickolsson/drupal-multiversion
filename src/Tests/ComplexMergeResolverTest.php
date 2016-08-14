@@ -31,7 +31,7 @@ class ComplexMergeResolverTest extends MultiversionWebTestBase {
     $entity = $storage->create(['name' => 'rev 1']);
     $entity->save();
 
-    $entity->name = 'rev 1';
+    $entity->name = 'rev 2';
     $entity->save();
 
     $entity->name = 'rev 1';
