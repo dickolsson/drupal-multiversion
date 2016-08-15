@@ -14,7 +14,7 @@ class ComplexMergeResolverTest extends MultiversionWebTestBase {
   public static $modules = ['entity_test', 'key_value', 'entity_storage_migrate', 'multiversion', 'conflict', 'serialization'];
 
   protected $merge_array = [];
-  
+
   protected $conflictMergeManager;
 
   /**
@@ -25,7 +25,7 @@ class ComplexMergeResolverTest extends MultiversionWebTestBase {
     $this->conflictMergeManager = $this->container->get('conflict.merge_manager');
     $this->tree = $this->container->get('multiversion.entity_index.rev.tree');
   }
-  
+
   public function testMergeResolver() {
     $storage = $this->entityManager->getStorage('entity_test');
     $entity = $storage->create(['name' => 'rev 1']);

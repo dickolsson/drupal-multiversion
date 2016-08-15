@@ -31,7 +31,7 @@ class ComplexMergeResolver implements ConflictResolverInterface {
    */
   public function merge(RevisionableInterface $revision1, RevisionableInterface $revision2, RevisionableInterface $revision3) {
     $container = \Drupal::getContainer();
-    $serializer = $container->get('serializer.normalizer.content_entity');
+    $serializer = $container->get('serializer');
     $r1_array = $serializer->normalize($revision1, 'array');
     $r2_array = $serializer->normalize($revision2, 'array');
     $r3_array = $serializer->normalize($revision3, 'array');
