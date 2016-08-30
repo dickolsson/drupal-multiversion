@@ -87,7 +87,10 @@ class MenuTreeStorage extends CoreMenuTreeStorage {
         }
         elseif (!$parent) {
           // Create a new menu link as stub.
-          $parent = $storage->create(['uuid' => $uuid]);
+          $parent = $storage->create([
+            'uuid' => $uuid,
+            'link' => 'internal:/',
+          ]);
           // Indicate that this revision is a stub.
           $parent->_rev->is_stub = TRUE;
           $parent->save();
