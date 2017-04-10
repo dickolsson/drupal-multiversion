@@ -93,3 +93,7 @@ services:
     class: Drupal\multiversion\Entity\Index\ComplexLcaResolver
     tags:
       - { name: lca_resolver, priority: 20 }
+  conflict.complexmerge_resolver:
+    class: Drupal\multiversion\Entity\Index\ComplexMergeResolver
+    tags:
+      - { name: merge_resolver, priority: 20 }
