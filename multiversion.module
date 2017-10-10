@@ -64,6 +64,14 @@ function multiversion_entity_type_alter(array &$entity_types) {
           $entity_type->setHandlerClass('storage', "$namespace\\MenuLinkContentStorage");
           break;
 
+        case 'block_content':
+          $entity_type->setClass('Drupal\multiversion\Entity\BlockContent');
+          $entity_type->setFormClass('add', 'Drupal\multiversion\BlockContentForm');
+          $entity_type->setFormClass('edit', 'Drupal\multiversion\BlockContentForm');
+          $entity_type->setFormClass('default', 'Drupal\multiversion\BlockContentForm');
+          $entity_type->setHandlerClass('storage', "$namespace\\ContentEntityStorage");
+          break;
+
         case 'file':
           $entity_type->setHandlerClass('storage', "$namespace\\FileStorage");
           break;
@@ -437,6 +445,18 @@ function multiversion_menu_links_discovered_alter(&$links) {
       if (!isset($links[$id])) {
         $links[$id] = $menu_link_content->getPluginDefinition();
       }
+    }
+  }
+}
+
+/**
+ * Implements hook_block_alter().
+ */
+function multiversion_block_alter(&$definitions) {
+  foreach ($definitions as &$definition) {
+    if ($definition['id'] === 'block_content') {
+      $definition['deriver'] = 'Drupal\multiversion\Plugin\Derivative\BlockContentBlock';
+      $definition['class'] = 'Drupal\multiversion\Plugin\Block\BlockContentBlock';
     }
   }
 }

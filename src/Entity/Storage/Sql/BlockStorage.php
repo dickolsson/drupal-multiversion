@@ -16,19 +16,20 @@ class BlockStorage extends ConfigEntityStorage {
   protected function doLoadMultiple(array $ids = NULL) {
     $entities = parent::doLoadMultiple($ids);
     $entity_type_manager = \Drupal::entityTypeManager();
+    $active_workspace = \Drupal::service('workspace.manager')->getActiveWorkspace();
+    $active_workspace_id = $active_workspace->id();
     /** @var \Drupal\block\Entity\Block $entity */
     foreach ($entities as $id => $entity) {
       $plugin_id = $entity->getPluginId();
-      if (strpos($plugin_id, ':') === FALSE) {
+      if (substr_count($plugin_id, ':') !== 2) {
         continue;
       }
-      list($provider, $uuid) = explode(':', $plugin_id);
+      list($provider, $uuid, $ws) = explode(':', $plugin_id);
       if ($provider && $provider === 'block_content' && $uuid) {
         $storage = $entity_type_manager->getStorage('block_content');
-        $active_workspace = \Drupal::service('workspace.manager')->getActiveWorkspace();
-        $loaded_entity = $storage->loadByProperties(['uuid' => $uuid, 'workspace' => $active_workspace->id()]);
+        $loaded_entity = $storage->loadByProperties(['uuid' => $uuid, 'workspace' => $active_workspace_id]);
         $loaded_entity = reset($loaded_entity);
-        if ($loaded_entity instanceof ContentEntityInterface) {
+        if ($loaded_entity instanceof ContentEntityInterface && $ws === "ws$active_workspace_id") {
           $entities[$id]->addCacheableDependency($loaded_entity);
           $entities[$id]->addCacheableDependency($active_workspace);
         }

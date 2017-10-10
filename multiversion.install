@@ -1,5 +1,6 @@
 <?php
 
+use Drupal\block\BlockInterface;
 use Drupal\Core\Entity\ContentEntityTypeInterface;
 use Drupal\multiversion\Entity\Workspace;
 use Drupal\Core\Database\Database;
@@ -15,6 +16,54 @@ function multiversion_install() {
   /** @var \Drupal\multiversion\MultiversionManagerInterface $manager */
   $manager = \Drupal::getContainer()->get('multiversion.manager');
   $manager->enableEntityTypes();
+
+  $entity_type_manager = \Drupal::entityTypeManager();
+  $definitions = $entity_type_manager->getDefinitions();
+  if (in_array('block', $definitions)) {
+    /** @var \Drupal\block\Entity\Block[] $blocks */
+    $blocks = $entity_type_manager->getStorage('block')->loadMultiple();
+    foreach ($blocks as $block) {
+      $plugin_id = $block->getPluginId();
+      if (substr_count($plugin_id, ':') !== 1) {
+        continue;
+      }
+      list($provider,) = explode(':', $plugin_id, 2);
+      if ($provider === 'block_content') {
+        $settings = [
+          'plugin' => "$plugin_id:ws1",
+          'label' => $block->label(),
+          'theme' => $block->getTheme(),
+          'region' => $block->getRegion(),
+          'visibility' => $block->getVisibility(),
+          'weight' => $block->getWeight(),
+        ];
+        $values = $settings;
+        $values['settings'] = $settings;
+        $values['id'] = get_unique_machine_name($block->id(), array_keys($blocks));
+        $entity_type_manager
+          ->getStorage('block')
+          ->create($values)
+          ->save();
+        $block->delete();
+      }
+    }
+  }
+}
+
+function get_unique_machine_name($suggestion, $block_ids) {
+  $block_ids = array_map(function ($block_id) {
+    $parts = explode('.', $block_id);
+    return end($parts);
+  }, $block_ids);
+
+  // Iterate through potential IDs until we get a new one. E.g.
+  // 'plugin', 'plugin_2', 'plugin_3', etc.
+  $count = 1;
+  $machine_default = $suggestion;
+  while (in_array($machine_default, $block_ids)) {
+    $machine_default = $suggestion . '_' . ++$count;
+  }
+  return $machine_default;
 }
 
 /**

@@ -16,6 +16,10 @@ class MultiversionServiceProvider extends ServiceProviderBase {
     $renderer_config['required_cache_contexts'][] = 'workspace';
     $container->setParameter('renderer.config', $renderer_config);
 
+    // Override the plugin.manager.block class with a new class.
+    $definition = $container->getDefinition('plugin.manager.block');
+    $definition->setClass('Drupal\multiversion\BlockManager');
+
     // Switch the menu tree storage to our own that respect Workspace cache
     // contexts.
     $definition = $container->getDefinition('menu.tree_storage');

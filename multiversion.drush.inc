@@ -90,6 +90,40 @@ function drush_multiversion_uninstall() {
     try {
       \Drupal::service('multiversion.manager')->disableEntityTypes();
       drush_module_uninstall(['multiversion']);
+
+      $entity_type_manager = \Drupal::entityTypeManager();
+      $definitions = $entity_type_manager->getDefinitions();
+      if (in_array('block', $definitions)) {
+        /** @var \Drupal\block\Entity\Block[] $blocks */
+        $blocks = $entity_type_manager->getStorage('block')->loadMultiple();
+        foreach ($blocks as $block) {
+          $plugin_id = $block->getPluginId();
+          if (substr_count($plugin_id, ':') !== 2) {
+            continue;
+          }
+          list($provider, $uuid,) = explode(':', $plugin_id, 3);
+          if ($provider === 'block_content') {
+            $id = "block_content:$uuid";
+            $settings = [
+              'plugin' => $id,
+              'label' => $block->label(),
+              'theme' => $block->getTheme(),
+              'region' => $block->getRegion(),
+              'visibility' => $block->getVisibility(),
+              'weight' => $block->getWeight(),
+            ];
+            $values = $settings;
+            $values['settings'] = $settings;
+            $values['id'] = get_unique_machine_name($block->id(), array_keys($blocks));
+            $entity_type_manager
+              ->getStorage('block')
+              ->create($values)
+              ->save();
+            $block->delete();
+          }
+        }
+      }
+
     }
     catch (Exception $e) {
       drush_log($e->getMessage(), LogLevel::ERROR);
