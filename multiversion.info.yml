@@ -7,7 +7,7 @@ dependencies:
   - key_value
   - serialization
   - conflict
-  - system (>=8.1.0)
+  - system (>=8.3.0)
 test_dependencies:
   - paragraphs
   - entity_reference_revisions

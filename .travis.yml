@@ -7,9 +7,9 @@ php:
   - 7.1
 
 env:
-  - MAKE_FILE=drupal-8.2.x.make.yml
   - MAKE_FILE=drupal-8.3.x.make.yml
   - MAKE_FILE=drupal-8.4.x.make.yml
+  - MAKE_FILE=drupal-8.5.x.make.yml
 
 services:
   - mysql
