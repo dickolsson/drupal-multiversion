@@ -2,11 +2,9 @@
 
 namespace Drupal\multiversion\Entity;
 
-use Drupal\Core\Entity\Entity;
 use Drupal\Core\Entity\ContentEntityBase;
 use Drupal\Core\Entity\EntityChangedTrait;
 use Drupal\Core\Entity\EntityPublishedTrait;
-use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\Core\Field\BaseFieldDefinition;
 use Drupal\user\UserInterface;
@@ -97,6 +95,65 @@ class Workspace extends ContentEntityBase implements WorkspaceInterface {
     $fields['published']->addConstraint('UnpublishWorkspace');
 
     return $fields;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function delete() {
+    if (!$this->isNew()) {
+      $workspace_id = $this->id();
+      $entity_type_manager = \Drupal::entityTypeManager();
+      // Delete related workspace pointer entities.
+      /** @var \Drupal\workspace\WorkspacePointerInterface[] $workspace_pointers */
+      $workspace_pointers = $entity_type_manager->getStorage('workspace_pointer')->loadByProperties(['workspace_pointer' => $workspace_id]);
+      if (!empty($workspace_pointers)) {
+        $workspace_pointer = reset($workspace_pointers);
+        $workspace_pointer->delete();
+      }
+
+      /** @var \Drupal\Core\Queue\QueueInterface $queue */
+      $queue = \Drupal::queue('deleted_workspace_queue');
+      $queue->createQueue();
+      /** @var \Drupal\multiversion\MultiversionManagerInterface $multiversion_manager */
+      $multiversion_manager = \Drupal::service('multiversion.manager');
+      /** @var \Drupal\Core\Entity\ContentEntityInterface $entity_type */
+      foreach ($multiversion_manager->getEnabledEntityTypes() as $entity_type) {
+        // Load IDs for deleted entities.
+        $deleted_entity_ids = $entity_type_manager
+          ->getStorage($entity_type->id())
+          ->getQuery()
+          ->useWorkspace($workspace_id)
+          ->isDeleted()
+          ->execute();
+        // Load IDs for non-deleted entities.
+        $entity_ids = $entity_type_manager
+          ->getStorage($entity_type->id())
+          ->getQuery()
+          ->useWorkspace($workspace_id)
+          ->isNotDeleted()
+          ->execute();
+        foreach (array_merge($entity_ids, $deleted_entity_ids) as $entity_id) {
+          $data = [
+            'workspace' => $workspace_id,
+            'entity_type_id' => $entity_type->id(),
+            'entity_id' => $entity_id,
+          ];
+          $queue->createItem($data);
+        }
+      }
+      // Add the workspace to the queue to be deleted.
+      $data = [
+        'workspace' => 0,
+        'entity_type_id' => 'workspace',
+        'entity_id' => $workspace_id,
+      ];
+      $queue->createItem($data);
+
+      if ($this->id() === $multiversion_manager->getActiveWorkspaceId()) {
+        $multiversion_manager->setActiveWorkspaceId(\Drupal::getContainer()->getParameter('workspace.default'));
+      }
+    }
   }
 
   /**

@@ -77,7 +77,7 @@ class AliasStorage extends CoreAliasStorage {
       $route_name = $url->getRouteName();
       $route_name_parts = explode('.', $route_name);
       if ($route_name_parts[0] === 'entity' && $this->isMultiversionableEntityType($route_name_parts[1])) {
-        $workspace = $this->workspaceManager->getActiveWorkspace()->id();
+        $workspace = $this->workspaceManager->getActiveWorkspaceId();
       }
     }
 
@@ -167,7 +167,7 @@ class AliasStorage extends CoreAliasStorage {
     }
 
     $select = $this->connection->select(static::TABLE);
-    $select->condition('workspace', [$this->workspaceManager->getActiveWorkspace()->id(), 0], 'IN');
+    $select->condition('workspace', [$this->workspaceManager->getActiveWorkspaceId(), 0], 'IN');
     foreach ($conditions as $field => $value) {
       if ($field == 'source' || $field == 'alias') {
         // Use LIKE for case-insensitive matching.
@@ -206,7 +206,7 @@ class AliasStorage extends CoreAliasStorage {
     $select = $this->connection->select(static::TABLE)
       ->fields(static::TABLE, ['alias'])
       ->condition('source', $source, 'LIKE')
-      ->condition('workspace', [$this->workspaceManager->getActiveWorkspace()->id(), 0], 'IN');
+      ->condition('workspace', [$this->workspaceManager->getActiveWorkspaceId(), 0], 'IN');
     if ($langcode == LanguageInterface::LANGCODE_NOT_SPECIFIED) {
       array_pop($langcode_list);
     }
@@ -243,7 +243,7 @@ class AliasStorage extends CoreAliasStorage {
     $select = $this->connection->select(static::TABLE)
       ->fields(static::TABLE, ['source'])
       ->condition('alias', $alias, 'LIKE')
-      ->condition('workspace', [$this->workspaceManager->getActiveWorkspace()->id(), 0], 'IN');
+      ->condition('workspace', [$this->workspaceManager->getActiveWorkspaceId(), 0], 'IN');
     if ($langcode == LanguageInterface::LANGCODE_NOT_SPECIFIED) {
       array_pop($langcode_list);
     }
@@ -277,7 +277,7 @@ class AliasStorage extends CoreAliasStorage {
     $query = $this->connection->select(static::TABLE)
       ->condition('alias', $this->connection->escapeLike($alias), 'LIKE')
       ->condition('langcode', $langcode)
-      ->condition('workspace', [$this->workspaceManager->getActiveWorkspace()->id(), 0], 'IN');
+      ->condition('workspace', [$this->workspaceManager->getActiveWorkspaceId(), 0], 'IN');
     if (!empty($source)) {
       $query->condition('source', $this->connection->escapeLike($source), 'NOT LIKE');
     }
@@ -302,7 +302,7 @@ class AliasStorage extends CoreAliasStorage {
     $query = $this->connection->select(static::TABLE)
       ->extend('Drupal\Core\Database\Query\PagerSelectExtender')
       ->extend('Drupal\Core\Database\Query\TableSortExtender');
-    $query->condition('workspace', [$this->workspaceManager->getActiveWorkspace()->id(), 0], 'IN');
+    $query->condition('workspace', [$this->workspaceManager->getActiveWorkspaceId(), 0], 'IN');
     if ($keys) {
       // Replace wildcards with PDO wildcards.
       $query->condition('alias', '%' . preg_replace('!\*+!', '%', $keys) . '%', 'LIKE');
