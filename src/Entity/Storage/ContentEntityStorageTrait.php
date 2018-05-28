@@ -175,7 +175,8 @@ trait ContentEntityStorageTrait {
 
     // Index the revision.
     $branch = $this->buildRevisionBranch($entity);
-    if ($this->entityType->get('local') !== TRUE) {
+    $local = (boolean) $this->entityType->get('local');
+    if (!$local) {
       $this->indexEntityRevision($entity);
       $this->indexEntityRevisionTree($entity, $branch);
     }
@@ -189,8 +190,8 @@ trait ContentEntityStorageTrait {
       $save_result = parent::save($entity);
 
       // Update indexes.
-      $this->indexEntity($entity);
-      if ($this->entityType->get('local') !== TRUE) {
+      if (!$local) {
+        $this->indexEntity($entity);
         $this->indexEntityRevision($entity);
         $this->trackConflicts($entity);
       }
