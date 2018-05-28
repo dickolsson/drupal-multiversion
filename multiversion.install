@@ -573,20 +573,3 @@ function multiversion_update_8109() {
     }
   }
 }
-
-/**
- * Clear the key_value_sorted table.
- */
-function multiversion_update_8110() {
-  $database = \Drupal::database();
-  $workspaces = \Drupal::entityTypeManager()
-    ->getStorage('workspace')
-    ->loadMultiple();
-
-  foreach ($workspaces as $workspace) {
-    $id = $workspace->id();
-    $database->delete('key_value_sorted')
-      ->condition('collection', "multiversion.entity_index.sequence.$id")
-      ->execute();
-  }
-}
