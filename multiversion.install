@@ -577,7 +577,7 @@ function multiversion_update_8109() {
 /**
  * Clear the key_value_sorted table.
  */
-function pfpfizerse_profile_update_8110() {
+function multiversion_update_8110() {
   $database = \Drupal::database();
   $workspaces = \Drupal::entityTypeManager()
     ->getStorage('workspace')
