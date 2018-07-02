@@ -135,7 +135,7 @@ class Workspace extends ContentEntityBase implements WorkspaceInterface {
           ->execute();
         foreach (array_merge($entity_ids, $deleted_entity_ids) as $entity_id) {
           $data = [
-            'workspace' => $workspace_id,
+            'workspace_id' => $workspace_id,
             'entity_type_id' => $entity_type->id(),
             'entity_id' => $entity_id,
           ];
@@ -144,7 +144,6 @@ class Workspace extends ContentEntityBase implements WorkspaceInterface {
       }
       // Add the workspace to the queue to be deleted.
       $data = [
-        'workspace' => 0,
         'entity_type_id' => 'workspace',
         'entity_id' => $workspace_id,
       ];
