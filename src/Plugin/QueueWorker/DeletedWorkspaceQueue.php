@@ -57,12 +57,11 @@ class DeletedWorkspaceQueue extends QueueWorkerBase implements ContainerFactoryP
   public function processItem($data) {
     $storage = $this->entityTypeManager->getStorage($data['entity_type_id']);
     if ($storage instanceof ContentEntityStorageInterface) {
-      $storage->useWorkspace($data['workspace']);
-      $entity = $storage->load($data['entity_id']);
+      $original_storage = $storage->getOriginalStorage();
+      $entity = $original_storage->load($data['entity_id']);
       if ($entity) {
-        $storage->getOriginalStorage()->delete([$entity]);
+        $original_storage->delete([$entity]);
       }
-      $storage->useWorkspace(NULL);
     }
     elseif ($data['entity_type_id'] == 'workspace') {
       $entity = $storage->load($data['entity_id']);
