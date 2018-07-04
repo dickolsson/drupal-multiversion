@@ -153,7 +153,6 @@ class Workspace extends ContentEntityBase implements WorkspaceInterface {
         $multiversion_manager->setActiveWorkspaceId(\Drupal::getContainer()->getParameter('workspace.default'));
       }
     }
-    parent::delete();
   }
 
   /**
