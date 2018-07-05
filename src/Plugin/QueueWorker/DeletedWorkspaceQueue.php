@@ -9,6 +9,7 @@ use Drupal\Core\Utility\Error;
 use Drupal\multiversion\Entity\Storage\ContentEntityStorageInterface;
 use Drupal\multiversion\Entity\Workspace;
 use Drupal\multiversion\Workspace\WorkspaceManagerInterface;
+use Exception;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -72,14 +73,7 @@ class DeletedWorkspaceQueue extends QueueWorkerBase implements ContainerFactoryP
       $original_storage = $storage->getOriginalStorage();
       $entity = $original_storage->load($data['entity_id']);
       if ($entity) {
-        try {
-          $original_storage->delete([$entity]);
-        }
-        catch (\Throwable $e) {
-          $arguments = Error::decodeException($e) + ['%uuid' => $entity->uuid()];
-          $message = t('%type: @message in %function (line %line of %file). The error occurred while deleting the entity with the UUID: %uuid.', $arguments);
-          throw new \Exception($message);
-        }
+        $this->deleteEntity($original_storage, $entity);
       }
       $default_workspace = Workspace::load(\Drupal::getContainer()->getParameter('workspace.default'));
       if ($default_workspace) {
@@ -89,8 +83,44 @@ class DeletedWorkspaceQueue extends QueueWorkerBase implements ContainerFactoryP
     elseif ($data['entity_type_id'] == 'workspace') {
       $entity = $storage->load($data['entity_id']);
       if ($entity) {
-        $storage->delete([$entity]);
+        $this->deleteEntity($storage, $entity);
+        // Cleanup indexes.
+        $database = \Drupal::database();
+        $collections = [
+          'multiversion.entity_index.id.' . $data['entity_id'],
+          'multiversion.entity_index.uuid.' . $data['entity_id'],
+          'multiversion.entity_index.rev.' . $data['entity_id'],
+        ];
+        $database
+          ->delete('key_value')
+          ->condition('collection', $collections, 'IN')
+          ->execute();
+        // Delete sequence indexes.
+        $database
+          ->delete('key_value_sorted')
+          ->condition('collection', 'multiversion.entity_index.sequence.' . $data['entity_id'])
+          ->execute();
+        // Delete revision tree indexes.
+        $database
+          ->delete('key_value')
+          ->condition('collection', 'multiversion.entity_index.rev.tree.' . $data['entity_id'] . '.%', 'LIKE')
+          ->execute();
       }
+    }
+  }
+
+  /**
+   * @param \Drupal\Core\Entity\ContentEntityStorageInterface $storage
+   * @param \Drupal\Core\Entity\ContentEntityStorageInterface $entity
+   */
+  protected function deleteEntity($storage, $entity) {
+    try {
+      $storage->delete([$entity]);
+    }
+    catch (Exception $e) {
+      $arguments = Error::decodeException($e) + ['%uuid' => $entity->uuid()];
+      $message = t('%type: @message in %function (line %line of %file). The error occurred while deleting the entity with the UUID: %uuid.', $arguments);
+      watchdog_exception('Multiversion', $e, $message);
     }
   }
 }
