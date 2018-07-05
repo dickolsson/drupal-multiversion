@@ -51,7 +51,7 @@ class EntityLoadingTest extends KernelTestBase {
     $dau_workspace->save();
 
     $workspace_manager = \Drupal::service('workspace.manager');
-    $this->assertEquals($un_workspace->id(), $workspace_manager->getActiveWorkspace()->id());
+    $this->assertEquals($un_workspace->id(), $workspace_manager->getActiveWorkspaceId());
 
     $node_type = NodeType::create([
       'type' => 'example',

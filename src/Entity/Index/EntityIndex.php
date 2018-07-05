@@ -151,7 +151,7 @@ class EntityIndex implements EntityIndexInterface {
    * Helper method for getting what workspace ID to query.
    */
   protected function getWorkspaceId() {
-    return $this->workspaceId ?: $this->workspaceManager->getActiveWorkspace()->id();
+    return $this->workspaceId ?: $this->workspaceManager->getActiveWorkspaceId();
   }
 
 }

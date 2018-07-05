@@ -25,7 +25,7 @@ class MultiversionIndexFactory {
   public function get($service, WorkspaceInterface $workspace = null) {
     $index = $this->container->get($service . '.scope');
     if ($index instanceof IndexInterface) {
-      $workspace_id = $workspace ? $workspace->id() : $this->workspaceManager->getActiveWorkspace()->id();
+      $workspace_id = $workspace ? $workspace->id() : $this->workspaceManager->getActiveWorkspaceId();
       return $indexes[$workspace_id][$service] = $index->useWorkspace($workspace_id);
     }
     else {

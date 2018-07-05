@@ -47,7 +47,7 @@ class ConflictTracker implements ConflictTrackerInterface {
     $this->keyValueFactory = $key_value_factory;
     $this->workspaceManager = $workspace_manager;
     // Set workspace to currently active workspace.
-    $this->workspaceId = $this->workspaceManager->getActiveWorkspace()->id();
+    $this->workspaceId = $this->workspaceManager->getActiveWorkspaceId();
   }
 
   /**

@@ -22,7 +22,7 @@ class CurrentWorkspace extends FilterPluginBase {
 
   public function query() {
     $table = $this->ensureMyTable();
-    $active_workspace = \Drupal::service('workspace.manager')->getActiveWorkspace()->id();
+    $active_workspace = \Drupal::service('workspace.manager')->getActiveWorkspaceId();
     $placeholder = $this->placeholder();
     $this->query->addWhereExpression($this->options['group'], "$table.workspace = $placeholder", [$placeholder => $active_workspace]);
   }

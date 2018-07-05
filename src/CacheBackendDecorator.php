@@ -35,7 +35,7 @@ class CacheBackendDecorator implements CacheBackendInterface {
    * @return string
    */
   protected function decorate($cid) {
-    return "$cid:" . $this->workspaceManager->getActiveWorkspace()->id();
+    return "$cid:" . $this->workspaceManager->getActiveWorkspaceId();
   }
 
   /**

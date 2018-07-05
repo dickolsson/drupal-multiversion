@@ -44,7 +44,7 @@ class WorkspaceTest extends MultiversionTestBase {
     $new_workspace = Workspace::create(['machine_name' => 'new_workspace', 'label' => 'New Workspace', 'type' => 'basic']);
     $new_workspace->save();
     $workspace_manager->setActiveWorkspace($new_workspace);
-    $this->assertEqual($new_workspace->id(), $workspace_manager->getActiveWorkspace()->id());
+    $this->assertEqual($new_workspace->id(), $workspace_manager->getActiveWorkspaceId());
 
     // Create two nodes on 'new_workspace' workspace.
     $node3 = $this->drupalCreateNode(['uid' => $uid]);
@@ -59,7 +59,7 @@ class WorkspaceTest extends MultiversionTestBase {
 
     // Switch back to the original workspace and test the view.
     $workspace_manager->setActiveWorkspace($initial_workspace);
-    $this->assertEqual($initial_workspace->id(), $workspace_manager->getActiveWorkspace()->id());
+    $this->assertEqual($initial_workspace->id(), $workspace_manager->getActiveWorkspaceId());
     $this->drupalGet('test_current_workspace');
     $this->assertText($node1->label());
     $this->assertText($node2->label());

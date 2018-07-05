@@ -93,7 +93,7 @@ class SequenceIndex implements SequenceIndexInterface {
    */
   protected function sortedSetStore($workspace_id = null) {
     if (!$workspace_id) {
-      $workspace_id = $this->workspaceId ?: $this->workspaceManager->getActiveWorkspace()->id();
+      $workspace_id = $this->workspaceId ?: $this->workspaceManager->getActiveWorkspaceId();
     }
     return $this->sortedSetFactory->get($this->collectionPrefix . $workspace_id);
   }

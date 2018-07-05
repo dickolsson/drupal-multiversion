@@ -45,7 +45,7 @@ class RouteProvider extends CoreRouteProvider {
   public function getRouteCollectionForRequest(Request $request) {
     // Cache both the system path as well as route parameters and matching
     // routes.
-    $workspace_id = $this->workspaceManager->getActiveWorkspace()->id();
+    $workspace_id = $this->workspaceManager->getActiveWorkspaceId();
     // @todo Remove this when Multiversion requires Drupal 8.5 or newer.
     if (!method_exists($this, 'getCurrentLanguageCacheIdPart')) {
       $cid = 'route:' . "workspace$workspace_id:" . $request->getPathInfo() . ':' . $request->getQueryString();

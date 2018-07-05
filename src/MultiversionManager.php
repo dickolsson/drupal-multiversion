@@ -129,7 +129,7 @@ class MultiversionManager implements MultiversionManagerInterface, ContainerAwar
    * {@inheritdoc}
    */
   public function getActiveWorkspaceId() {
-    return $this->workspaceManager->getActiveWorkspace()->id();
+    return $this->workspaceManager->getActiveWorkspaceId();
   }
 
   /**
