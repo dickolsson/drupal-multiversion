@@ -60,7 +60,6 @@ class DeletedWorkspaceQueue extends QueueWorkerBase implements ContainerFactoryP
    *
    * @throws \Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException
    * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
-   * @throws \Drupal\Core\Entity\EntityStorageException
    * @throws \Exception
    */
   public function processItem($data) {

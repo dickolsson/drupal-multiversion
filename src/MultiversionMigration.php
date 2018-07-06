@@ -132,17 +132,14 @@ class MultiversionMigration implements MultiversionMigrationInterface {
    * {@inheritdoc}
    */
   public function emptyOldStorage(EntityStorageInterface $storage) {
-    $entities = $storage->loadMultiple();
-    if ($entities) {
-      // Purge entities if the storage class is an instance of
-      // \Drupal\multiversion\Entity\Storage\ContentEntityStorageInterface,
-      // delete entities otherwise.
-      if ($storage instanceof ContentEntityStorageInterface) {
-        $storage->purge($entities);
-      }
-      else {
-        $storage->delete($entities);
-      }
+    if ($storage instanceof ContentEntityStorageInterface) {
+      $original_storage = $storage->getOriginalStorage();
+      $entities = $original_storage->loadMultiple();
+      $original_storage->delete($entities);
+    }
+    else {
+      $entities = $storage->loadMultiple();
+      $storage->delete($entities);
     }
     return $this;
   }

@@ -491,14 +491,6 @@ class MultiversionManager implements MultiversionManagerInterface, ContainerAwar
       }
 
       if ($has_data[$entity_type_id]) {
-        // Purge all deleted entities from current storage.
-        if ($storage instanceof ContentEntityStorageInterface) {
-          $deleted = $storage->loadMultipleDeleted();
-          if (!empty($deleted)) {
-            $storage->purge($deleted);
-          }
-        }
-
         // Migrate content to temporary storage.
         if ($storage->getEntityTypeId() === 'file') {
           $migration->copyFilesToMigrateDirectory($storage);

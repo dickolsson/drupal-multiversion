@@ -29,6 +29,9 @@ class EntityContentBase extends SourcePluginBase {
 
     $results = [];
     foreach ($entities as $entity_id => $entity) {
+      if (isset($entity->_deleted->value) && $entity->_deleted->value) {
+        continue;
+      }
       foreach($entity->getTranslationLanguages(TRUE) as $language) {
         $result = [];
         foreach ($entity->getTranslation($language->getId()) as $field_name => $field) {
