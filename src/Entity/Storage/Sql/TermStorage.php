@@ -31,12 +31,21 @@ class TermStorage extends CoreTermStorage implements ContentEntityStorageInterfa
         $this->treeParents[$vid] = [];
         $this->treeTerms[$vid] = [];
         $active_workspace = \Drupal::service('workspace.manager')->getActiveWorkspace();
-        $query = $this->database->select('taxonomy_term_field_data', 't');
-        $query->join('taxonomy_term_hierarchy', 'h', 'h.tid = t.tid');
-        $result = $query
+        $query = $this->database->select($this->getDataTable(), 't');
+        if (floatval(\Drupal::VERSION) < 8.6) {
+          $query->join('taxonomy_term_hierarchy', 'h', 'h.tid = t.tid');
+        }
+        else {
+          $query->join('taxonomy_term__parent', 'p', 't.tid = p.entity_id');
+        }
+        $query->addExpression('parent_target_id', 'parent');
+        $query
           ->addTag('taxonomy_term_access')
-          ->fields('t')
-          ->fields('h', ['parent'])
+          ->fields('t');
+        if (floatval(\Drupal::VERSION) < 8.6) {
+          $query->fields('h', ['parent']);
+        }
+        $result = $query
           ->condition('t.vid', $vid)
           ->condition('t.default_langcode', 1)
           ->condition('t._deleted', 0)
@@ -44,7 +53,7 @@ class TermStorage extends CoreTermStorage implements ContentEntityStorageInterfa
           ->orderBy('t.weight')
           ->orderBy('t.name')
           ->execute();
-        foreach ($result as $key => $term) {
+        foreach ($result as $term) {
           $this->treeChildren[$vid][$term->parent][] = $term->tid;
           $this->treeParents[$vid][$term->tid][] = $term->parent;
           $this->treeTerms[$vid][$term->tid] = $term;
@@ -86,7 +95,9 @@ class TermStorage extends CoreTermStorage implements ContentEntityStorageInterfa
               $term = clone $term;
             }
             $term->depth = $depth;
-            unset($term->parent);
+            if (!$load_entities) {
+              unset($term->parent);
+            }
             $tid = $load_entities ? $term->id() : $term->tid;
             $term->parents = $this->treeParents[$vid][$tid];
             $tree[] = $term;
@@ -136,9 +147,15 @@ class TermStorage extends CoreTermStorage implements ContentEntityStorageInterfa
    *   Array of terms that need to be removed from hierarchy.
    */
   public function updateParentHierarchy($tids) {
-    $this->database->update('taxonomy_term_hierarchy')
-      ->condition('parent', $tids)
-      ->fields(['parent' => 0])
+    $table = 'taxonomy_term__parent';
+    $field = 'parent_target_id';
+    if (floatval(\Drupal::VERSION) < 8.6) {
+      $table = 'taxonomy_term_hierarchy';
+      $field = 'parent';
+    }
+    $this->database->update($table)
+      ->condition($field, $tids, 'IN')
+      ->fields([$field => 0])
       ->execute();
   }
 
