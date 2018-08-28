@@ -73,7 +73,7 @@ services:
     class: Drupal\multiversion\Block\BlockManager
     decoration_priority: 50
     parent: default_plugin_manager
-    arguments: ['@database', '@workspace.manager']
+    arguments: ['@logger.channel.default', '@database', '@workspace.manager']
   logger.channel.workspace:
     parent: logger.channel_base
     arguments: ['cron']

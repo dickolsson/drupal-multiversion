@@ -7,6 +7,7 @@ use Drupal\Core\Cache\CacheBackendInterface;
 use Drupal\Core\Database\Connection;
 use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\multiversion\Workspace\WorkspaceManagerInterface;
+use Psr\Log\LoggerInterface;
 
 /**
  * Adds the workspace ID to the cache key.
@@ -45,13 +46,14 @@ class BlockManager extends CoreBlockManager {
    *   Cache backend instance to use.
    * @param \Drupal\Core\Extension\ModuleHandlerInterface $module_handler
    *   The module handler to invoke the alter hook with.
+   * @param \Psr\Log\LoggerInterface $logger
    * @param \Drupal\Core\Database\Connection $database
    *   The database connection.
    * @param \Drupal\multiversion\Workspace\WorkspaceManagerInterface $workspace_manager
    *   The workspace manager service.
    */
-  public function __construct(\Traversable $namespaces, CacheBackendInterface $cache_backend, ModuleHandlerInterface $module_handler, Connection $database, WorkspaceManagerInterface $workspace_manager) {
-    parent::__construct($namespaces, $cache_backend, $module_handler);
+  public function __construct(\Traversable $namespaces, CacheBackendInterface $cache_backend, ModuleHandlerInterface $module_handler, LoggerInterface $logger, Connection $database, WorkspaceManagerInterface $workspace_manager) {
+    parent::__construct($namespaces, $cache_backend, $module_handler, $logger);
 
     $this->database = $database;
     $this->workspaceManager = $workspace_manager;
