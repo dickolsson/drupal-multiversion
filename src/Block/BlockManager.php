@@ -54,6 +54,13 @@ class BlockManager extends CoreBlockManager {
    */
   public function __construct(\Traversable $namespaces, CacheBackendInterface $cache_backend, ModuleHandlerInterface $module_handler, LoggerInterface $logger, Connection $database, WorkspaceManagerInterface $workspace_manager) {
     parent::__construct($namespaces, $cache_backend, $module_handler, $logger);
+    // @todo Remove this when Multiversion requires Drupal 8.6 or newer.
+    if (floatval(\Drupal::VERSION) < 8.6) {
+      parent::__construct($namespaces, $cache_backend, $module_handler);
+    }
+    else {
+      parent::__construct($namespaces, $cache_backend, $module_handler, $logger);
+    }
 
     $this->database = $database;
     $this->workspaceManager = $workspace_manager;
