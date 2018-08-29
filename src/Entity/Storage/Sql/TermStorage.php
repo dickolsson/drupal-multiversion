@@ -32,17 +32,18 @@ class TermStorage extends CoreTermStorage implements ContentEntityStorageInterfa
         $this->treeTerms[$vid] = [];
         $active_workspace = \Drupal::service('workspace.manager')->getActiveWorkspace();
         $query = $this->database->select($this->getDataTable(), 't');
-        if (floatval(\Drupal::VERSION) < 8.6) {
+        $core_version = floatval(\Drupal::VERSION);
+        if ($core_version < 8.6) {
           $query->join('taxonomy_term_hierarchy', 'h', 'h.tid = t.tid');
         }
         else {
           $query->join('taxonomy_term__parent', 'p', 't.tid = p.entity_id');
+          $query->addExpression('parent_target_id', 'parent');
         }
-        $query->addExpression('parent_target_id', 'parent');
         $query
           ->addTag('taxonomy_term_access')
           ->fields('t');
-        if (floatval(\Drupal::VERSION) < 8.6) {
+        if ($core_version < 8.6) {
           $query->fields('h', ['parent']);
         }
         $result = $query
