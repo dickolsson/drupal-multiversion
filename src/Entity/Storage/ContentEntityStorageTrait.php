@@ -386,7 +386,7 @@ trait ContentEntityStorageTrait {
       $i = $count_revisions + 1;
     }
     // When reverting revisions.
-    elseif ($i < $count_revisions && !$entity->isNew()) {
+    elseif (!empty($entity->is_reverting)) {
       $i = $count_revisions;
       $parent_rev = !empty($revisions[0]) ? $i . '-' . $revisions[0] : $rev;
     }

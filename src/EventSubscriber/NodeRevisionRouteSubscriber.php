@@ -5,6 +5,8 @@ namespace Drupal\multiversion\EventSubscriber;
 use Drupal\Core\Routing\RouteSubscriberBase;
 use Drupal\Core\Routing\RoutingEvents;
 use Drupal\multiversion\Controller\MultiversionNodeController;
+use Drupal\multiversion\Form\MultiversionRevisionRevertForm;
+use Drupal\multiversion\Form\MultiversionRevisionRevertTranslationForm;
 use Symfony\Component\Routing\RouteCollection;
 
 /**
@@ -27,6 +29,13 @@ class NodeRevisionRouteSubscriber extends RouteSubscriberBase {
       if ($route = $collection->get('entity.node.version_history')) {
         $route->setDefault('_controller', MultiversionNodeController::class . '::revisionOverview');
       }
+    }
+
+    if ($route = $collection->get('node.revision_revert_confirm')) {
+      $route->setDefault('_form', MultiversionRevisionRevertForm::class);
+    }
+    if ($route = $collection->get('node.revision_revert_translation_confirm')) {
+      $route->setDefault('_form', MultiversionRevisionRevertTranslationForm::class);
     }
   }
 
