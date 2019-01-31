@@ -9,7 +9,7 @@ use Drupal\node\NodeInterface;
 class NodeRevisionAccessCheck extends CoreNodeRevisionAccessCheck {
 
   public function checkAccess(NodeInterface $node, AccountInterface $account, $op = 'view') {
-    if ($op === 'view') {
+    if ($op == 'view' || $op == 'update') {
       return parent::checkAccess($node, $account, $op);
     }
     else {

@@ -650,9 +650,6 @@ function multiversion_form_revision_overview_form_alter(&$form, FormStateInterfa
       if (empty($revision_info['operations']) || !is_array($revision_info['operations'])) {
         continue;
       }
-      if (isset($revision_info['operations']['#links']['revert'])) {
-        unset($form['node_revisions_table'][$key]['operations']['#links']['revert']);
-      }
       if (isset($revision_info['operations']['#links']['delete'])) {
         unset($form['node_revisions_table'][$key]['operations']['#links']['delete']);
       }

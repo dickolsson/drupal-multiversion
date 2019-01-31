@@ -16,14 +16,18 @@ class MultiversionNodeController extends NodeController {
    * {@inheritdoc}
    */
   public function revisionOverview(NodeInterface $node) {
+    $account = $this->currentUser();
     $langcode = $node->language()->getId();
     $langname = $node->language()->getName();
     $languages = $node->getTranslationLanguages();
     $has_translations = (count($languages) > 1);
     $node_storage = $this->entityManager()->getStorage('node');
+    $type = $node->getType();
 
     $build['#title'] = $has_translations ? $this->t('@langname revisions for %title', ['@langname' => $langname, '%title' => $node->label()]) : $this->t('Revisions for %title', ['%title' => $node->label()]);
-    $header = [$this->t('Revision'), ''];
+    $header = [$this->t('Revision'), $this->t('Operations')];
+
+    $revert_permission = (($account->hasPermission("revert $type revisions") || $account->hasPermission('revert all revisions') || $account->hasPermission('administer nodes')) && $node->access('update'));
 
     $rows = [];
     $default_revision = $node->getRevisionId();
@@ -87,6 +91,23 @@ class MultiversionNodeController extends NodeController {
           ];
         }
         else {
+          $links = [];
+          if ($revert_permission) {
+            $links['revert'] = [
+              'title' => $vid < $node->getRevisionId() ? $this->t('Revert') : $this->t('Set as current revision'),
+              'url' => $has_translations ?
+                Url::fromRoute('node.revision_revert_translation_confirm', ['node' => $node->id(), 'node_revision' => $vid, 'langcode' => $langcode]) :
+                Url::fromRoute('node.revision_revert_confirm', ['node' => $node->id(), 'node_revision' => $vid]),
+            ];
+          }
+
+          $row[] = [
+            'data' => [
+              '#type' => 'operations',
+              '#links' => $links,
+            ],
+          ];
+
           $rows[] = $row;
         }
       }

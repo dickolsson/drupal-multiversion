@@ -381,8 +381,14 @@ trait ContentEntityStorageTrait {
     $revisions = $entity->_rev->revisions;
     list($i) = explode('-', $rev);
     $count_revisions = count($revisions);
+    $parent_rev = $rev;
     if ($count_revisions > $i && $entity->isNew()) {
       $i = $count_revisions + 1;
+    }
+    // When reverting revisions.
+    elseif ($i < $count_revisions && !$entity->isNew()) {
+      $i = $count_revisions;
+      $parent_rev = !empty($revisions[0]) ? $i . '-' . $revisions[0] : $rev;
     }
 
     // This is a regular local save operation and a new revision token should be
@@ -391,7 +397,7 @@ trait ContentEntityStorageTrait {
     if ($entity->_rev->new_edit || $entity->_rev->is_stub) {
       // If this is the first revision it means that there's no parent.
       // By definition the existing revision value is the parent revision.
-      $parent_rev = $i == 0 ? 0 : $rev;
+      $parent_rev = $i == 0 ? 0 : $parent_rev;
       // Only generate a new revision if this is not a stub entity. This will
       // ensure that stub entities remain with the default value (0) to make it
       // clear on a storage level that this is a stub and not a "real" revision.
@@ -424,41 +430,6 @@ trait ContentEntityStorageTrait {
       }
     }
     return $branch;
-  }
-
-  /**
-   * {@inheritdoc}
-   *
-   * @todo Revisit this logic with forward revisions in mind.
-   */
-  protected function doSave($id, EntityInterface $entity) {
-    if ($entity->_rev->is_stub || $this->entityType->get('local')
-      || (!empty($entity->original) && $entity->original->_rev->is_stub)) {
-      $entity->isDefaultRevision(TRUE);
-    }
-    else {
-      // Enforce new revision if any module messed with it in a hook.
-      $entity->setNewRevision();
-
-      // Decide whether or not this is the default revision.
-      if (!$entity->isNew()) {
-        $workspace = isset($entity->workspace) ? $entity->workspace->entity : null;
-        $index_factory = \Drupal::service('multiversion.entity_index.factory');
-        /** @var \Drupal\multiversion\Entity\Index\RevisionTreeIndexInterface $tree */
-        $tree = $index_factory->get('multiversion.entity_index.rev.tree', $workspace);
-        $default_rev = $tree->getDefaultRevision($entity->uuid());
-
-        if ($entity->_rev->value == $default_rev) {
-          $entity->isDefaultRevision(TRUE);
-        }
-        // @todo: {@link https://www.drupal.org/node/2597538 Needs test.}
-        else {
-          $entity->isDefaultRevision(FALSE);
-        }
-      }
-    }
-
-    return parent::doSave($id, $entity);
   }
 
   /**
