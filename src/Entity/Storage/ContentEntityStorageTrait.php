@@ -434,6 +434,41 @@ trait ContentEntityStorageTrait {
 
   /**
    * {@inheritdoc}
+   *
+   * @todo Revisit this logic with forward revisions in mind.
+   */
+  protected function doSave($id, EntityInterface $entity) {
+    if ($entity->_rev->is_stub || $this->entityType->get('local')
+      || (!empty($entity->original) && $entity->original->_rev->is_stub)) {
+      $entity->isDefaultRevision(TRUE);
+    }
+    else {
+      // Enforce new revision if any module messed with it in a hook.
+      $entity->setNewRevision();
+
+      // Decide whether or not this is the default revision.
+      if (!$entity->isNew()) {
+        $workspace = isset($entity->workspace) ? $entity->workspace->entity : null;
+        $index_factory = \Drupal::service('multiversion.entity_index.factory');
+        /** @var \Drupal\multiversion\Entity\Index\RevisionTreeIndexInterface $tree */
+        $tree = $index_factory->get('multiversion.entity_index.rev.tree', $workspace);
+        $default_rev = $tree->getDefaultRevision($entity->uuid());
+
+        if ($entity->_rev->value == $default_rev) {
+          $entity->isDefaultRevision(TRUE);
+        }
+        // @todo: {@link https://www.drupal.org/node/2597538 Needs test.}
+        else {
+          $entity->isDefaultRevision(FALSE);
+        }
+      }
+    }
+
+    return parent::doSave($id, $entity);
+  }
+
+  /**
+   * {@inheritdoc}
    */
   public function delete(array $entities) {
     // Entities are always "deleted" as new revisions when using a Multiversion
