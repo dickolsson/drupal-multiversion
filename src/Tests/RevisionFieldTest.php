@@ -33,7 +33,6 @@ class RevisionFieldTest extends FieldTestBase {
       $entity = $this->createTestEntity($storage, $values);
 
       // Test normal save operations.
-
       $this->assertTrue($entity->_rev->new_edit, 'New edit flag is TRUE after creation.');
 
       $revisions = $entity->_rev->revisions;
@@ -45,7 +44,6 @@ class RevisionFieldTest extends FieldTestBase {
       $this->assertTrue((strpos($first_rev, '1') === 0), 'Revision index was 1 after first save.');
 
       // Simulate the input from a replication.
-
       $entity = $this->createTestEntity($storage, $values);
       $sample_rev = RevisionItem::generateSampleValue($entity->_rev->getFieldDefinition());
 
@@ -57,7 +55,6 @@ class RevisionFieldTest extends FieldTestBase {
       $this->assertEqual($entity->_rev->value, $sample_rev['value']);
 
       // Test the is_stub property.
-
       $entity = $this->createTestEntity($storage, $values);
       $entity->save();
       $entity = $storage->load($entity->id());
@@ -77,10 +74,31 @@ class RevisionFieldTest extends FieldTestBase {
       $this->assertEqual($entity->_rev->value, '0-00000000000000000000000000000000', 'Entity has the revision ID of a stub.');
       $entity->_rev->is_stub = FALSE;
       $this->assertFalse($entity->_rev->is_stub, 'Setting an explicit value as not stub works after an entity has been saved.');
+
+      // Test that a new entity with an existing _rev value get's it reset.
+      $rev = '3-b6ae50eeb6b074a80647364f5b7cb6d6';
+      $entity = $this->createTestEntity($storage, array_merge($values, ['_rev' => $rev]));
+      $this->assertEqual($entity->_rev->value, $rev);
+      $entity->save();
+      $this->assertEqual(explode('-', $entity->_rev->value)[0], '1');
+      $entity->setNewRevision(TRUE);
+      $entity->save();
+      $this->assertEqual(explode('-', $entity->_rev->value)[0], '2');
     }
   }
 
-  public function createTestEntity(EntityStorageInterface $storage, array $values) {
+  /**
+   * Create an entity to test the _rev field.
+   *
+   * @param \Drupal\Core\Entity\EntityStorageInterface $storage
+   *   The entity storage to create an entity for.
+   * @param array $values
+   *   The values for the created entity.
+   *
+   * @return \Drupal\Core\Entity\EntityInterface
+   *   The created entity.
+   */
+  protected function createTestEntity(EntityStorageInterface $storage, array $values) {
     switch ($storage->getEntityTypeId()) {
       case 'block_content':
         $values['info'] = $this->randomMachineName();

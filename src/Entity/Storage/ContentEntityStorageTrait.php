@@ -377,7 +377,8 @@ trait ContentEntityStorageTrait {
     // get rolled back during exceptions. All records are kept in order to more
     // accurately build revision trees of all universally known revisions.
     $branch = [];
-    $rev = $entity->_rev->value;
+    // New entities should always default to a 0 revision hash.
+    $rev = $entity->_rev->new_edit && $entity->isNew() ? '0-00000000000000000000000000000000' : $entity->_rev->value;
     $revisions = $entity->_rev->revisions;
     list($i) = explode('-', $rev);
     $count_revisions = count($revisions);
