@@ -73,6 +73,9 @@ services:
   logger.channel.workspace:
     parent: logger.channel_base
     arguments: ['cron']
+  multiversion.entity_references.manager:
+    class: Drupal\multiversion\EntityReferencesManager
+    arguments: ['@entity_type.manager', '@multiversion.manager', '@entity_field.manager', '@entity_type.bundle.info']
 
   # @todo: {@link https://www.drupal.org/node/2597414 Simplify the container
   # definition for negotiators.}
