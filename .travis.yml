@@ -7,15 +7,9 @@ php:
   - 7.3
 
 env:
-  - MAKE_FILE=drupal-8.5.x.make.yml
   - MAKE_FILE=drupal-8.6.x.make.yml
   - MAKE_FILE=drupal-8.7.x.make.yml
-
-matrix:
-  allow_failures:
-    - php: 7.3
-      env: MAKE_FILE=drupal-8.5.x.make.yml
-  fast_finish: true
+  - MAKE_FILE=drupal-8.8.x.make.yml
 
 services:
   - mysql
