@@ -58,7 +58,7 @@ class RedirectRepository extends ContribRedirectRepository {
 
     // Load redirects by hash. A direct query is used to improve performance.
     $rid = $this->connection->query(
-      'SELECT rid FROM {redirect} WHERE hash IN (:hashes[]) AND workspace = :workspace ORDER BY LENGTH(redirect_source__query) DESC',
+      'SELECT rid FROM {redirect} WHERE hash IN (:hashes[]) AND workspace = :workspace AND _deleted != 1 ORDER BY LENGTH(redirect_source__query) DESC',
       [':hashes[]' => $hashes, ':workspace' => $this->workspaceManager->getActiveWorkspaceId()])
       ->fetchField();
 
