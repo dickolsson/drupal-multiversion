@@ -442,6 +442,7 @@ function multiversion_views_query_alter(ViewExecutable $view, QueryPluginBase $q
     'block_content',
     'poll_admin',
     'poll_list',
+    'media_library'
   ];
   if (in_array($view->id(), $views_ids)) {
     /** @var \Drupal\multiversion\MultiversionManagerInterface $manager */
