@@ -2,7 +2,6 @@
 
 namespace Drupal\Tests\multiversion\Kernel;
 
-use Drupal\KernelTests\KernelTestBase;
 use Drupal\multiversion\Entity\Workspace;
 use Drupal\node\Entity\Node;
 use Drupal\node\Entity\NodeType;
@@ -11,27 +10,7 @@ use Drupal\node\Entity\NodeType;
 /**
  * @group multiversion
  */
-class EntityLoadingTest extends KernelTestBase {
-
-  /**
-   * {@inheritdoc}
-   */
-  public static $modules = ['multiversion', 'key_value', 'serialization', 'user', 'system', 'node'];
-
-  /**
-   * {@inheritdoc}
-   */
-  protected function setUp() {
-    parent::setUp();
-
-    $this->installEntitySchema('workspace');
-    $this->installEntitySchema('node');
-    $this->installEntitySchema('user');
-    $this->installConfig('multiversion');
-    $this->installSchema('key_value', 'key_value_sorted');
-    $multiversion_manager = $this->container->get('multiversion.manager');
-    $multiversion_manager->enableEntityTypes();
-  }
+class EntityLoadingTest extends MultiversionKernelTestBase {
 
   /**
    * Tests loading entities.
